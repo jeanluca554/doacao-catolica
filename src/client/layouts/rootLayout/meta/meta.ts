@@ -1,0 +1,7 @@
+import type { MetaFunction } from "react-router";
+
+const rootMeta: MetaFunction = (props) => {
+  return [{ title: "InovaMed" }];
+};
+
+export { rootMeta };

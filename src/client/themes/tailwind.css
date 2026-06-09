@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  *,
+  input,
+  textarea,
+  button {
+    line-height: 100%;
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+  }
+}
+
+/* InputGroup: adiciona padding automaticamente quando há addon */
+[data-slot="input-group"]:has([data-align="inline-start"])
+  [data-slot="input-group-input"] {
+  padding-left: 2.25rem;
+}
+
+[data-slot="input-group"]:has([data-align="inline-end"])
+  [data-slot="input-group-input"] {
+  padding-right: 2.25rem;
+}
+
+/* FormField: estado de erro — borda e ícone ficam vermelhos; ring vermelho ao focar */
+[data-invalid] [data-slot="input-addon"] {
+  color: rgb(var(--spotlight-danger));
+}
+
+[data-invalid] [data-slot="input-group-input"] {
+  border-color: rgb(var(--spotlight-danger));
+}
+
+[data-invalid] [data-slot="input-group-input"]:focus-visible {
+  --tw-ring-color: rgb(var(--spotlight-danger));
+}
