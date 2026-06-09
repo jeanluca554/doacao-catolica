@@ -10,7 +10,8 @@
     "dev:release": "dotenv -e .env.release -- react-router dev",
     "dev:production": "dotenv -e .env.production -- react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "ccm": "./autocommit.sh"
   },
   "dependencies": {
     "@arkyn/components": "3.0.1-beta.137",

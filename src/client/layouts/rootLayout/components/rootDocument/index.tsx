@@ -3,8 +3,6 @@ import type { ReactNode } from "react";
 
 import { RootDocumentContainer } from "./styles";
 
-import "@arkyn/components/dist/style.css";
-// import "~/client/themes/reset.css";
 import "~/client/themes/tailwind.css";
 
 type RootDocument = {
