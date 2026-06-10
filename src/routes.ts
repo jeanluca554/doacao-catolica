@@ -35,7 +35,7 @@ export default [
   ]),
   
   layout("./main/routes/layout.appLayout.tsx", [
-    route("test", "./main/routes/route.test.tsx"),
+    route("my-campaigns", "./main/routes/route.myCampaigns.tsx"),
   ]),
 
   route("treatment/:treatmentId", "./main/routes/layout.treatmentLayout.tsx", [
