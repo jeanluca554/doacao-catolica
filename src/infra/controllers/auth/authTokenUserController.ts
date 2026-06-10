@@ -22,7 +22,11 @@ class AuthTokenUserController {
       token: userJson.token,
     };
 
-    return AuthService.setAuthStorage(route, sessionUser, to || "/choose-workspace");
+    return AuthService.setAuthStorage(
+      route,
+      sessionUser,
+      to || "/my-campaigns",
+    );
   }
 }
 

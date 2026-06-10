@@ -14,11 +14,12 @@ import {
 class CampaignGateway implements CampaignGatewayDTO {
   async listCampaigns(
     searchParams: CampaignSearchParams,
+    token: string,
   ): Promise<SearchResult<Campaign>> {
     let url = "/project/summary-list";
     url += searchParams.toExternal();
 
-    const apiResponse = await api.get(url);
+    const apiResponse = await api.get(url, { token });
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 

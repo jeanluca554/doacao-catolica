@@ -3,22 +3,9 @@ import { type RouteConfig, index, layout, route } from "@react-router/dev/routes
 export default [
   index("./main/routes/_index.ts"),
   
-  route("api/auth/google", "./main/routes/api.authGoogle.ts"),
-  route("api/auth/google/callback", "./main/routes/api.authGoogleCallback.ts"),
   route("api/logout-user", "./main/routes/api.logoutUser.ts"),
-  route("api/validate-user/:token", "./main/routes/api.validateUser.ts"),
   route("api/file-upload", "./main/routes/api.fileUpload.ts"),
   route("api/auth/token", "./main/routes/api.authToken.ts"),
-  
-  layout("./main/routes/layout.signLayout.tsx", [ 
-    route("sign-in", "./main/routes/route.signIn.tsx"),
-    route("sign-up", "./main/routes/route.signUp.tsx"),
-    route("sign-up-google", "./main/routes/route.signUpGoogle.tsx"),
-    route("verify-email/:userEmail", "./main/routes/route.verifyEmail.tsx"),
-    route("forgot-password", "./main/routes/route.forgotPassword.tsx"),
-    route("forgot-password/:forgotPasswordToken", "./main/routes/route.changeForgotPassword.tsx"),
-    route("choose-workspace", "./main/routes/route.chooseWorkspace.tsx"),
-  ]),
   
   layout("./main/routes/layout.pendingInvitesLayout.tsx", [ 
     route("pending-invites/:token", "./main/routes/route.pendingInvites.tsx"),

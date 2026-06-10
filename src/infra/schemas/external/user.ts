@@ -2,11 +2,11 @@ import z from "zod";
 
 type ExternalUser = z.infer<typeof externalUserSchema>;
 
-const externalTokenSchema = z.strictObject({
+const externalTokenSchema = z.object({
   jwt: z.string(),
 });
 
-const externalUserSchema = z.strictObject({
+const externalUserSchema = z.object({
   id: z.number(),
   provider: z.enum(["facebook", "google", "password"]),
   register_provider: z.enum(["facebook", "google", "password"]),

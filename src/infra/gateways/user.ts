@@ -10,10 +10,12 @@ import { environmentVariables as env } from "~/main/config/environmentVariables"
 
 class UserGateway implements UserGatewayDTO {
   async meUser(token: string): Promise<User> {
-    const url = `${env.API_DATABASE}/me`;
+    const url = `/${env.API_DATABASE}/me`;
     const apiResponse = await api.get(url, {
       token,
     });
+    console.log("apiResponse", apiResponse);
+
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 
     const schemaValidator = new SchemaValidatorAdapter(externalUserSchema);

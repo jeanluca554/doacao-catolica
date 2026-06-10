@@ -3,17 +3,20 @@ import type { CampaignGatewayDTO } from "~/domain/gateways/campaign";
 
 type InputProps = {
   page?: number | null;
-  filter: { name?: string; organizationId?: string };
+  token: string;
 };
 
 class ListCampaignsUseCase {
   constructor(private campaignGateway: CampaignGatewayDTO) {}
 
   async execute(input: InputProps) {
-    const { page, filter } = input;
-    const searchParams = new CampaignSearchParams({ page, filter });
+    const { page, token } = input;
+    const searchParams = new CampaignSearchParams({ page });
 
-    const campaigns = await this.campaignGateway.listCampaigns(searchParams);
+    const campaigns = await this.campaignGateway.listCampaigns(
+      searchParams,
+      token,
+    );
 
     return campaigns.toJson();
   }
