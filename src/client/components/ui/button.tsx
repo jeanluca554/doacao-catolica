@@ -5,8 +5,7 @@ import type { ComponentProps } from "react";
 const button = tv({
   base: [
     "inline-flex items-center justify-center gap-2",
-    "rounded-md font-semibold text-sm",
-    "min-h-11 px-4 py-2 w-full",
+    "font-semibold text-sm",
     "transition-[filter] duration-150",
     "disabled:opacity-50 disabled:cursor-not-allowed",
     "cursor-pointer",
@@ -21,9 +20,14 @@ const button = tv({
       danger:
         "bg-[rgb(var(--spotlight-danger))] text-white hover:brightness-95",
     },
+    size: {
+      default: "rounded-md min-h-11 px-4 py-2 w-full",
+      icon: "size-8 rounded-full p-0",
+    },
   },
   defaultVariants: {
     variant: "default",
+    size: "default",
   },
 });
 
@@ -38,6 +42,7 @@ type ButtonProps = ComponentProps<"button"> &
 export function Button({
   className,
   variant,
+  size,
   asChild = false,
   isLoading = false,
   disabled,
@@ -48,7 +53,7 @@ export function Button({
   return (
     <Comp
       disabled={isLoading || disabled}
-      className={button({ variant, className })}
+      className={button({ variant, size, className })}
       {...props}
     >
       {isLoading ? "Carregando..." : children}

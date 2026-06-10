@@ -3,12 +3,19 @@ import {
   ChevronDown,
   LayoutGrid,
   LifeBuoy,
+  Moon,
   Settings,
+  Sun,
 } from "lucide-react";
+import { Button } from "~/client/components/ui/button";
 import { useRoot } from "~/client/hooks/useRoot";
+import { useTheme } from "~/client/hooks/useTheme";
+
+const iconButtonClass = "bg-(--card-foreground-secondary)";
 
 function Header() {
   const { LIGHT_LOGO } = useRoot().environmentVariables;
+  const { theme, toggle } = useTheme();
 
   return (
     <header className="flex h-16 items-center justify-between border-b border-(--border) bg-(--card) px-8">
@@ -19,43 +26,50 @@ function Header() {
 
       <div className="flex shrink-0 items-center gap-4">
         <div className="flex h-8 items-center gap-4">
-          <button
-            type="button"
-            aria-label="Notificações"
-            className="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-(--card-foreground-secondary)"
-          >
-            <Bell size={20} className="stroke-(--text-heading)" />
-            <span className="absolute left-6 top-0 size-2 rounded-full bg-[rgb(var(--spotlight-danger))] ring-2 ring-(--card)" />
-          </button>
-
-          <button
-            type="button"
-            aria-label="Ajuda"
-            className="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-(--card-foreground-secondary)"
-          >
-            <LifeBuoy size={20} className="stroke-(--text-heading)" />
-          </button>
-
-          <button
-            type="button"
+          <Button
+            size="icon"
+            variant="ghost"
             aria-label="Apps"
-            className="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-(--card-foreground-secondary)"
+            className={iconButtonClass}
           >
-            <LayoutGrid size={20} className="stroke-(--text-heading)" />
-          </button>
+            <LayoutGrid size={18} className="stroke-(--text-heading)" />
+          </Button>
         </div>
 
-        <button
-          type="button"
-          aria-label="Configurações"
-          className="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-(--card-foreground-secondary)"
+        <Button
+          size="icon"
+          variant="ghost"
+          aria-label="Alternar tema"
+          onClick={toggle}
+          className={iconButtonClass}
         >
-          <Settings size={20} className="stroke-(--text-heading)" />
-        </button>
+          {theme === "light" ? (
+            <Moon
+              key="moon"
+              size={18}
+              className="animate-theme-icon-in stroke-(--text-heading)"
+            />
+          ) : (
+            <Sun
+              key="sun"
+              size={18}
+              className="animate-theme-icon-in stroke-(--text-heading)"
+            />
+          )}
+        </Button>
+
+        <Button
+          size="icon"
+          variant="ghost"
+          aria-label="Configurações"
+          className={iconButtonClass}
+        >
+          <Settings size={18} className="stroke-(--text-heading)" />
+        </Button>
 
         <div className="flex items-center gap-2">
           <div className="size-11 shrink-0 rounded-full bg-linear-to-br from-indigo-400 to-violet-500" />
-          <ChevronDown size={16} className="text-(--text-body)  " />
+          <ChevronDown size={16} className="text-(--text-body)" />
         </div>
       </div>
     </header>
