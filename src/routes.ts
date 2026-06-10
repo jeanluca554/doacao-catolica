@@ -8,6 +8,7 @@ export default [
   route("api/logout-user", "./main/routes/api.logoutUser.ts"),
   route("api/validate-user/:token", "./main/routes/api.validateUser.ts"),
   route("api/file-upload", "./main/routes/api.fileUpload.ts"),
+  route("api/auth/token", "./main/routes/api.authToken.ts"),
   
   layout("./main/routes/layout.signLayout.tsx", [ 
     route("sign-in", "./main/routes/route.signIn.tsx"),

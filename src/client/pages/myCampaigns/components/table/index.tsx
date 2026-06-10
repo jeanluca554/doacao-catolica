@@ -1,9 +1,11 @@
 import { Eye } from "lucide-react";
+import { useLoaderData } from "react-router";
 import { Badge } from "~/client/components/ui/badge";
 import { Button } from "~/client/components/ui/button";
 import { Card } from "~/client/components/ui/card";
 import { Pagination } from "~/client/components/ui/pagination";
 import { Table } from "~/client/components/ui/table";
+import type { CampaignsLoader } from "~/client/types/campaignsLoader";
 
 type BadgeVariant = "success" | "danger" | "warning" | "info";
 
@@ -47,7 +49,24 @@ const TOTAL_PAGES = 12;
 const CURRENT_PAGE = 1;
 const VISIBLE_PAGES = [1, 2, 3, 4];
 
+function typeVariantBadge(value: number): {
+  variant: BadgeVariant;
+  label: string;
+} {
+  switch (value) {
+    case 1:
+      return { variant: "info", label: "Doação" };
+    case 2:
+      return { variant: "warning", label: "Dizimo" };
+    case 3:
+      return { variant: "success", label: "Mensalidade" };
+    default:
+      return { variant: "danger", label: "Outro" };
+  }
+}
+
 function TableCard() {
+  const { campaigns } = useLoaderData<CampaignsLoader>();
   return (
     <Card.Root>
       <Table.Root>
@@ -62,21 +81,21 @@ function TableCard() {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {campaigns.map((campaign) => (
+          {campaigns.data.map((campaign) => (
             <Table.Row key={campaign.id}>
               <Table.Cell>{campaign.name}</Table.Cell>
               <Table.Cell>
-                <Badge variant={campaign.status.variant}>
-                  {campaign.status.label}
+                <Badge variant={campaign.status ? "success" : "danger"}>
+                  {campaign.status ? "Ativo" : "Inativo"}
                 </Badge>
               </Table.Cell>
               <Table.Cell>
-                <Badge variant={campaign.type.variant}>
-                  {campaign.type.label}
+                <Badge variant={typeVariantBadge(campaign.type)?.variant}>
+                  {typeVariantBadge(campaign.type)?.label}
                 </Badge>
               </Table.Cell>
-              <Table.Cell>{campaign.start}</Table.Cell>
-              <Table.Cell>{campaign.end}</Table.Cell>
+              <Table.Cell>{campaign.startDate}</Table.Cell>
+              <Table.Cell>{campaign.endDate}</Table.Cell>
               <Table.Cell>
                 <div className="flex items-center justify-center gap-2">
                   <Button
