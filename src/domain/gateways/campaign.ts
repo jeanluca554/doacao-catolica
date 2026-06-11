@@ -7,6 +7,7 @@ type CampaignGatewayDTO = {
     searchParams: CampaignSearchParams,
     token: string,
   ) => Promise<SearchResult<Campaign>>;
+  getCampaign: (id: string, token: string) => Promise<Campaign>;
 };
 
 export type { CampaignGatewayDTO };

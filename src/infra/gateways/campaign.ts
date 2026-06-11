@@ -36,6 +36,17 @@ class CampaignGateway implements CampaignGatewayDTO {
     });
   }
 
+  async getCampaign(id: string, token: string): Promise<Campaign> {
+    const apiResponse = await api.get(`/project/find-one/${id}`, { token });
+
+    if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
+
+    const schemaValidator = new SchemaValidatorAdapter(externalCampaignSchema);
+    const externalCampaign = schemaValidator.validate(apiResponse.response);
+
+    return CampaignMapper.toEntity(externalCampaign);
+  }
+
   // async listCampaign(id: string): Promise<Campaign> {
   //   const apiResponse = await api.get(`/campaigns/${id}`);
 
