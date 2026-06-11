@@ -9,7 +9,7 @@ function CampaignBanner() {
   const { campaign } = useLoaderData<CampaignLayoutLoader>();
 
   return (
-    <header className="flex h-[57px] shrink-0 items-center justify-between border-b border-(--border) bg-(--card) px-7">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-(--border) bg-(--card) px-7">
       <div className="flex flex-col gap-0.5">
         <p className="text-xl font-semibold leading-6 text-(--text-heading)">
           {campaign.name}
@@ -18,7 +18,7 @@ function CampaignBanner() {
           <Badge variant={campaign.status ? "success" : "danger"}>
             {campaign.status ? "Ativo" : "Inativo"}
           </Badge>
-          <span className="text-[#cbd5e1]">•</span>
+          <span className="text-(--border)">•</span>
           <span className="text-(--text-muted)">
             {"Arrecadado: "}
             <span className="font-semibold text-[rgb(var(--spotlight-primary))]">
