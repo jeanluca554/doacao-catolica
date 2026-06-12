@@ -109,12 +109,17 @@ function NavItemRow({
     <SidebarMenuItem className="relative">
       <div
         className={cn(
-          "absolute left-0 top-1/2 -translate-y-1/2 h-7.5 w-1 rounded-r shrink-0",
+          "absolute -left-2 top-1/2 -translate-y-1/2 h-7.5 w-1 rounded-r shrink-0",
           isActive ? "bg-sidebar-primary" : "bg-transparent",
         )}
       />
       {to ? (
-        <SidebarMenuButton asChild isActive={isActive} tooltip={label}>
+        <SidebarMenuButton
+          asChild
+          isActive={isActive}
+          tooltip={label}
+          className={cn(isActive && "[&>svg]:text-(--primary)")}
+        >
           <NavLink to={to} end>
             <Icon size={18} />
             <span>{label}</span>
