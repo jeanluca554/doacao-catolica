@@ -35,7 +35,7 @@ function CampaignBanner() {
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
-          className="h-10 min-h-0 w-auto gap-1.5 rounded-md px-3.5 text-sm text-[rgb(var(--spotlight-primary))]"
+          className="h-10 min-h-0 w-auto gap-1.5 rounded-md px-3.5 text-sm"
           asChild
         >
           <Link to="/my-campaigns">

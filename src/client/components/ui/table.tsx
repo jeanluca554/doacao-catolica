@@ -3,7 +3,7 @@ import type { ComponentProps } from "react";
 
 function Root({ className, ...props }: ComponentProps<"table">) {
   return (
-    <div className="relative w-full overflow-x-auto rounded-md">
+    <div className="relative w-full overflow-x-auto rounded-(--radius)">
       <table
         className={cn(
           "w-full border-separate border-spacing-0 text-sm",
@@ -16,12 +16,7 @@ function Root({ className, ...props }: ComponentProps<"table">) {
 }
 
 function Header({ className, ...props }: ComponentProps<"thead">) {
-  return (
-    <thead
-      className={cn("bg-(--muted)", className)}
-      {...props}
-    />
-  );
+  return <thead className={cn("bg-(--muted)", className)} {...props} />;
 }
 
 function Body({ className, ...props }: ComponentProps<"tbody">) {
@@ -30,7 +25,7 @@ function Body({ className, ...props }: ComponentProps<"tbody">) {
       className={cn(
         "before:content-[''] before:table-row before:h-3",
         "[&>tr]:h-16 [&>tr:nth-child(odd)]:bg-(--secondary)",
-        "[&>tr:nth-child(n):hover]:bg-(--muted)",
+        "[&>tr:nth-child(n):hover]:bg-(--border)",
         className,
       )}
       {...props}
@@ -46,7 +41,7 @@ function Head({ className, ...props }: ComponentProps<"th">) {
   return (
     <th
       className={cn(
-        "h-11 px-4 text-left align-middle font-semibold text-sm text-(--foreground) whitespace-nowrap first:rounded-l-md last:rounded-r-md",
+        "h-11 px-4 text-left align-middle font-semibold text-sm text-(--foreground) whitespace-nowrap first:rounded-l-(--radius) last:rounded-r-(--radius)",
         className,
       )}
       {...props}
@@ -58,7 +53,7 @@ function Cell({ className, ...props }: ComponentProps<"td">) {
   return (
     <td
       className={cn(
-        "px-4 align-middle text-sm text-(--foreground) whitespace-nowrap first:rounded-l-md last:rounded-r-md",
+        "px-4 align-middle text-sm text-(--foreground) whitespace-nowrap first:rounded-l-(--radius) last:rounded-r-(--radius)",
         className,
       )}
       {...props}

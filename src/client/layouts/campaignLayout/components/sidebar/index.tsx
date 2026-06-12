@@ -83,8 +83,8 @@ function NavItemRow({
     <div className="flex items-center gap-2 py-px pr-3">
       <div
         className={cn(
-          "h-[30px] w-[3px] rounded-br rounded-tr shrink-0",
-          active ? "bg-[#60a5fa]" : "bg-transparent",
+          "h-7.5 w-0.75 rounded-br rounded-tr shrink-0",
+          active ? "bg-(--primary)" : "bg-transparent",
         )}
       />
       <div
@@ -128,7 +128,7 @@ function Sidebar() {
   const basePath = `/campaign/${campaignId}`;
 
   return (
-    <nav className="fixed left-0 top-0 flex h-screen w-68 flex-col bg-[#0f172a] pb-4 z-40">
+    <nav className="fixed left-0 top-0 flex h-screen w-68 flex-col pb-4 z-40">
       <div className="flex h-16 shrink-0 items-center px-5">
         <img src={LIGHT_LOGO} alt="Sancton" className="h-8 w-auto shrink-0" />
       </div>

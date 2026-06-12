@@ -11,7 +11,7 @@ const rootLinks: LinksFunction = () => [
     crossOrigin: "use-credentials",
   },
   {
-    href: "https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap",
     rel: "stylesheet",
   },
 ];
