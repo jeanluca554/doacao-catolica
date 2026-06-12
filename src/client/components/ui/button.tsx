@@ -12,11 +12,12 @@ const button = tv({
   ],
   variants: {
     variant: {
-      default:
-        "bg-(--primary) text-(--primary-foreground) hover:brightness-95",
+      default: "bg-(--primary) text-(--primary-foreground) hover:brightness-95",
+      secondary:
+        "bg-(--secondary) text-(--secondary-foreground) hover:brightness-95",
       outline:
-        "border border-(--border) bg-transparent text-(--foreground) hover:brightness-95",
-      ghost: "bg-transparent text-(--foreground) hover:brightness-95",
+        "border border-(--border) bg-transparent text-(--primary) hover:brightness-95",
+      ghost: "bg-transparent text-(--primary) hover:brightness-95",
       danger:
         "bg-(--destructive) text-(--destructive-foreground) hover:brightness-95",
     },
