@@ -1,6 +1,7 @@
 import {
   BarChart,
   BarChart2,
+  Bell,
   Calendar,
   FileCheck,
   FileText,
@@ -15,13 +16,14 @@ import {
   Users,
   Users2,
 } from "lucide-react";
+import { NavLink, useParams } from "react-router";
 import { useRoot } from "~/client/hooks/useRoot";
 import { cn } from "~/lib/utils";
 
 type NavItem = {
   icon: React.ElementType;
   label: string;
-  active?: boolean;
+  path?: string;
 };
 
 type NavSection = {
@@ -32,13 +34,14 @@ type NavSection = {
 const sections: NavSection[] = [
   {
     title: "",
-    items: [{ icon: LayoutDashboard, label: "Dashboard" }],
+    items: [{ icon: LayoutDashboard, label: "Dashboard", path: "home" }],
   },
   {
     title: "GESTÃO",
     items: [
-      { icon: Heart, label: "Doações", active: true },
+      { icon: Heart, label: "Doações" },
       { icon: Megaphone, label: "Campanhas" },
+      { icon: Bell, label: "Notificações enviadas", path: "notifications" },
       { icon: UserCheck, label: "Doadores" },
       { icon: Calendar, label: "Eventos" },
       { icon: Users, label: "Voluntários" },
@@ -70,8 +73,13 @@ const sections: NavSection[] = [
   },
 ];
 
-function NavItemRow({ icon: Icon, label, active }: NavItem) {
-  return (
+function NavItemRow({
+  icon: Icon,
+  label,
+  path,
+  basePath,
+}: NavItem & { basePath: string }) {
+  const inner = (active: boolean) => (
     <div className="flex items-center gap-2 py-px pr-3">
       <div
         className={cn(
@@ -100,10 +108,22 @@ function NavItemRow({ icon: Icon, label, active }: NavItem) {
       </div>
     </div>
   );
+
+  if (path) {
+    return (
+      <NavLink to={`${basePath}/${path}`} end>
+        {({ isActive }) => inner(isActive)}
+      </NavLink>
+    );
+  }
+
+  return inner(false);
 }
 
 function Sidebar() {
   const { LIGHT_LOGO } = useRoot().environmentVariables;
+  const { campaignId } = useParams<{ campaignId: string }>();
+  const basePath = `/campaign/${campaignId}`;
 
   return (
     <nav className="fixed left-0 top-0 flex h-screen w-68 flex-col bg-[#0f172a] pb-4 z-40">
@@ -120,7 +140,7 @@ function Sidebar() {
               </span>
             ) : null}
             {section.items.map((item) => (
-              <NavItemRow key={item.label} {...item} />
+              <NavItemRow key={item.label} {...item} basePath={basePath} />
             ))}
           </div>
         ))}
