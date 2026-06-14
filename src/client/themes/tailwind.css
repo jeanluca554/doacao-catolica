@@ -107,6 +107,7 @@
     --spotlight-info: 14, 165, 233;
     --spotlight-accent: 234, 179, 8;
     --spotlight-warning: 249, 115, 22;
+    --spotlight-teal: 20, 184, 166;
 
     /* toast */
     --toast-success: 16, 185, 129;
@@ -204,7 +205,9 @@
   --spotlight-success: 16, 185, 129;
   --spotlight-danger: 244, 63, 94;
   --spotlight-info: 14, 165, 233;
+  --spotlight-accent: 234, 179, 8;
   --spotlight-warning: 249, 115, 22;
+  --spotlight-teal: 20, 184, 166;
 
   /* toast */
   --toast-success: 16, 185, 129;

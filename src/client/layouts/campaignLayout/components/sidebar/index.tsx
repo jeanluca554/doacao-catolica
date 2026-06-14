@@ -4,13 +4,10 @@ import {
   BarChart2,
   Bell,
   Calendar,
-  FileCheck,
-  FileText,
   Heart,
   LayoutDashboard,
   Megaphone,
   Plug,
-  Receipt,
   ScrollText,
   Settings,
   UserCheck,
@@ -63,9 +60,7 @@ const sections: NavSection[] = [
   {
     title: "FINANCEIRO",
     items: [
-      { icon: Receipt, label: "Repasses" },
-      { icon: FileText, label: "Despesas" },
-      { icon: FileCheck, label: "Prestação de contas" },
+      { icon: ScrollText, label: "Extratos de pagamentos", path: "payment-statements" },
     ],
   },
   {
