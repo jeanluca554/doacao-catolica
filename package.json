@@ -10,8 +10,7 @@
     "dev:release": "dotenv -e .env.release -- react-router dev",
     "dev:production": "dotenv -e .env.production -- react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc",
-    "ccm": "./autocommit.sh"
+    "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
     "@arkyn/components": "3.0.1-beta.137",
@@ -44,6 +43,7 @@
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2",
     "tailwindcss": "^4.3.0",
+    "tailwindcss-animate": "^1.0.7",
     "zod": "4.3.6"
   },
   "devDependencies": {
