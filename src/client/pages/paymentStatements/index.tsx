@@ -10,6 +10,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { Card } from "~/client/components/ui/card";
+import { PaymentsTable } from "./components/paymentsTable";
 
 type MetricColor =
   | "teal"
@@ -96,6 +97,7 @@ function PaymentStatementsPage() {
           </Card.Root>
         ))}
       </div>
+      <PaymentsTable />
     </div>
   );
 }
