@@ -7,6 +7,8 @@ const paymentStatusSchema = z.object({
   gross_amount: z.number(),
 });
 
+type ExternalPaymentMetrics = z.infer<typeof externalPaymentMetricsSchema>;
+
 const externalPaymentMetricsSchema = z.object({
   total: z.object({
     amount: z.number(),
@@ -31,7 +33,5 @@ const externalPaymentMetricsSchema = z.object({
     subscriptions: z.record(z.string(), paymentStatusSchema),
   }),
 });
-
-type ExternalPaymentMetrics = z.infer<typeof externalPaymentMetricsSchema>;
 
 export { externalPaymentMetricsSchema, type ExternalPaymentMetrics };
