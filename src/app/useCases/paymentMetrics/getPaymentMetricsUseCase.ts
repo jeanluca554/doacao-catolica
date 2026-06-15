@@ -14,11 +14,10 @@ class GetPaymentMetricsUseCase {
 
   async execute(input: InputProps): Promise<PaymentMetricsData> {
     const { campaignPublicId } = input;
-
     const { firstDayOfMonth, lastDayOfMonth } = getMonthDates(0);
 
     const searchParams = new PaymentMetricsSearchParams({
-      filter: { start_date: firstDayOfMonth, end_date: lastDayOfMonth, per_page: 20 },
+      filter: { start_date: firstDayOfMonth, end_date: lastDayOfMonth },
     });
 
     return this.paymentMetricsGateway.getPaymentMetrics(
