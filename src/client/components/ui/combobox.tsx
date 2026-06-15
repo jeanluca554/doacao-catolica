@@ -25,6 +25,7 @@ type ComboboxProps = {
   options: ComboboxOption[];
   value?: string;
   onChange?: (value: string) => void;
+  onSearchChange?: (search: string) => void;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyText?: string;
@@ -35,6 +36,7 @@ function Combobox({
   options,
   value,
   onChange,
+  onSearchChange,
   placeholder = "Selecionar...",
   searchPlaceholder = "Pesquisar...",
   emptyText = "Nenhum resultado.",
@@ -65,7 +67,10 @@ function Combobox({
       </PopoverTrigger>
       <PopoverContent className="w-(--radix-popover-trigger-width) p-0">
         <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+          <CommandInput
+            placeholder={searchPlaceholder}
+            onValueChange={onSearchChange}
+          />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>

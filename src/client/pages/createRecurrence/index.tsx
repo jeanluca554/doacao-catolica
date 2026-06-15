@@ -183,7 +183,8 @@ function CreateRecurrencePage() {
               <Combobox
                 options={contactOptions}
                 value={selectedContactId}
-                onChange={(e) => setSelectedContactId(e)}
+                onChange={setSelectedContactId}
+                onSearchChange={(search) => handleChangeFilter("name", search)}
                 placeholder="Selecione um contato"
                 searchPlaceholder="Pesquisar por nome..."
                 emptyText="Nenhum contato encontrado."
