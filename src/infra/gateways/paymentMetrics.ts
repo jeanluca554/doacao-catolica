@@ -1,27 +1,31 @@
+import type { PaymentMetricsSearchParams } from "~/app/search/paymentMetricsSearchParams";
 import type {
-  GetPaymentMetricsParams,
   PaymentMetricsData,
   PaymentMetricsGatewayDTO,
 } from "~/domain/gateways/paymentMetrics";
 import { HttpAdapter } from "../adapters/httpAdapter";
 import { SchemaValidatorAdapter } from "../adapters/schemaValidatorAdapter";
-import { api } from "../http/api";
+import { donationApi } from "../http/donationApi";
 import { externalPaymentMetricsSchema } from "../schemas/external/paymentMetrics";
+import { environmentVariables } from "~/main/config/environmentVariables";
 
 class PaymentMetricsGateway implements PaymentMetricsGatewayDTO {
-  async getPaymentMetrics({
-    subAccountId,
-    startDate,
-    endDate,
-    token,
-  }: GetPaymentMetricsParams): Promise<PaymentMetricsData> {
-    const url = `/api/metrics/total-payments/${subAccountId}?start_date=${startDate}&end_date=${endDate}&per_page=20`;
+  async getPaymentMetrics(
+    campaignPublicId: string,
+    searchParams: PaymentMetricsSearchParams,
+  ): Promise<PaymentMetricsData> {
+    let url = `/api/metrics/total-payments/${campaignPublicId}`;
+    url += searchParams.toExternal(["page", "pageLimit"]);
 
-    const apiResponse = await api.get(url, { token });
+    const apiResponse = await donationApi.get(url, {
+      headers: { "api-key": environmentVariables.API_KEY_DONATION },
+    });
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 
-    const schemaValidator = new SchemaValidatorAdapter(externalPaymentMetricsSchema);
+    const schemaValidator = new SchemaValidatorAdapter(
+      externalPaymentMetricsSchema,
+    );
     const data = schemaValidator.validate(apiResponse.response.data);
 
     const fmt = (n: number) =>

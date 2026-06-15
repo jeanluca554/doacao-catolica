@@ -1,9 +1,4 @@
-type GetPaymentMetricsParams = {
-  subAccountId: string;
-  startDate: string;
-  endDate: string;
-  token: string;
-};
+import type { PaymentMetricsSearchParams } from "~/app/search/paymentMetricsSearchParams";
 
 type PaymentMetricsData = {
   receivedOnline: string;
@@ -17,7 +12,10 @@ type PaymentMetricsData = {
 };
 
 type PaymentMetricsGatewayDTO = {
-  getPaymentMetrics: (params: GetPaymentMetricsParams) => Promise<PaymentMetricsData>;
+  getPaymentMetrics: (
+    campaignPublicId: string,
+    searchParams: PaymentMetricsSearchParams,
+  ) => Promise<PaymentMetricsData>;
 };
 
-export type { PaymentMetricsGatewayDTO, GetPaymentMetricsParams, PaymentMetricsData };
+export type { PaymentMetricsGatewayDTO, PaymentMetricsData };
