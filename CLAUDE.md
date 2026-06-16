@@ -94,6 +94,28 @@ getMetrics(params: { id: string; searchParams: FeatureSearchParams }): Promise<D
 - `api` (`~/infra/http/api`) — chamadas autenticadas com token do usuário
 - `donationApi` (`~/infra/http/donationApi`) — endpoints da API de doações, autenticados via `api-key` no header (`environmentVariables.API_KEY_DONATION`). Controllers desses endpoints não precisam verificar `AuthService`.
 
+## Formulários
+
+Todo campo de formulário deve ser envolvido por `FormField`, inclusive campos com componentes customizados como `Combobox` e `ToggleGroup`. O `FormField` é o único ponto de exibição de erros retornados pelo servidor para aquele `name` — sem ele, um erro vindo da action não aparece na UI.
+
+```tsx
+// Padrão obrigatório — qualquer tipo de input
+<FormErrorProvider fieldErrors={data?.cause?.fieldErrors}>
+  <Form method="post">
+    <FormField name="paymentType" label="Forma de pagamento:" required>
+      <ToggleGroup name="paymentType" ... />
+    </FormField>
+    <FormField name="amount" label="Valor (R$):" required>
+      <Input name="amount" ... />
+    </FormField>
+  </Form>
+</FormErrorProvider>
+```
+
+Exceção: componentes que já encapsulam label + erro internamente (ex.: `SwitchField`) não precisam de wrapper externo.
+
+Use `useFetcher` para obter `{ Form, state, data }` — o `data` alimenta o `FormErrorProvider`.
+
 ## Utilitários de data
 
 `src/lib/getMonthDates.ts` — retorna `{ firstDayOfMonth, lastDayOfMonth }` em `YYYY-MM-DD`:

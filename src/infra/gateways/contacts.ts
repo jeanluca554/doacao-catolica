@@ -18,11 +18,13 @@ class ContactsGateway implements ContactsGatewayDTO {
     if (filter?.name) params.set("name", filter.name);
     if (filter?.accountId) params.set("filter[account_id]", filter.accountId);
 
-    const url = `/contact/find-many?${params.toString()}`;
+    const url = `/contact/select?${params.toString()}`;
 
     console.log("URL de busca de contatos:", url);
 
     const apiResponse = await api.get(url, { token });
+
+    console.log("Resposta da API de contatos:", apiResponse);
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 

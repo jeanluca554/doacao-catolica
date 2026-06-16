@@ -1,11 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import * as React from "react";
-import {
-  Link,
-  useLoaderData,
-  useParams,
-  useFetcher,
-} from "react-router";
+import { Link, useLoaderData, useParams, useFetcher } from "react-router";
 import {
   FormErrorProvider,
   FormField,
@@ -26,7 +21,6 @@ const CATEGORY_MAP: Record<number, "donation" | "tithe"> = {
   1: "donation",
   2: "tithe",
 };
-
 
 function SwitchField({
   name,
@@ -76,7 +70,9 @@ function CreateRecurrencePage() {
   const [valueType, setValueType] = React.useState<"fixed" | "undetermined">(
     "fixed",
   );
-  const [currentMonthPayment, setCurrentMonthPayment] = React.useState<"sim" | "não">("não");
+  const [currentMonthPayment, setCurrentMonthPayment] = React.useState<
+    "sim" | "não"
+  >("sim");
   const [activeNotification, setActiveNotification] = React.useState(true);
   const selectedContact =
     contacts.find((c) => c.id === selectedContactId) ?? null;
@@ -104,151 +100,181 @@ function CreateRecurrencePage() {
       </div>
 
       <FormErrorProvider fieldErrors={data?.cause?.fieldErrors}>
-      <Form method="post" className="space-y-6">
-        <input type="hidden" name="accountId" value={campaign.accountId} />
-        <input type="hidden" name="category" value={category} />
+        <Form method="post" className="space-y-6">
+          <input type="hidden" name="accountId" value={campaign.accountId} />
+          <input type="hidden" name="category" value={category} />
 
-        {/* hidden contact fields — populated via combobox selection */}
-        <input
-          type="hidden"
-          name="contactId"
-          value={selectedContact?.id ?? ""}
-        />
-        <input
-          type="hidden"
-          name="contactName"
-          value={selectedContact?.name ?? ""}
-        />
-        <input
-          type="hidden"
-          name="contactEmail"
-          value={selectedContact?.email ?? ""}
-        />
-        <input
-          type="hidden"
-          name="contactPhone"
-          value={selectedContact?.phone ?? ""}
-        />
-        <input
-          type="hidden"
-          name="contactCpf"
-          value={selectedContact?.cpf ?? ""}
-        />
-        <input
-          type="hidden"
-          name="contactBirthDate"
-          value={selectedContact?.birthDate ?? ""}
-        />
+          {/* hidden contact fields — populated via combobox selection */}
+          <input
+            type="hidden"
+            name="contactId"
+            value={selectedContact?.id ?? ""}
+          />
+          <input
+            type="hidden"
+            name="contactName"
+            value={selectedContact?.name ?? ""}
+          />
+          <input
+            type="hidden"
+            name="contactEmail"
+            value={selectedContact?.email ?? ""}
+          />
+          <input
+            type="hidden"
+            name="contactPhone"
+            value={selectedContact?.phone ?? ""}
+          />
+          <input
+            type="hidden"
+            name="contactCpf"
+            value={selectedContact?.cpf ?? ""}
+          />
+          <input
+            type="hidden"
+            name="contactBirthDate"
+            value={selectedContact?.birthDate ?? ""}
+          />
 
-        {/* contact selection */}
-        <Card.Root className="p-6">
-          <div className="mr-auto w-full max-w-xl flex flex-col gap-4">
-            <h2 className="font-semibold text-(--text-heading)">Contato</h2>
-            <FormField name="contactId" label="Pesquisar contato:" required>
-              <Combobox
-                options={contactOptions}
-                value={selectedContactId}
-                onChange={setSelectedContactId}
-                onSearchChange={(search) => handleChangeFilter("name", search)}
-                placeholder="Selecione um contato"
-                searchPlaceholder="Pesquisar por nome..."
-                emptyText="Nenhum contato encontrado."
-              />
-            </FormField>
-            {selectedContact && <ContactCard contact={selectedContact} />}
-          </div>
-        </Card.Root>
-
-        {/* payment form */}
-        <Card.Root className="p-6">
-          <div className="mr-auto w-full max-w-xl flex flex-col gap-6">
-            <h2 className="font-semibold text-(--text-heading)">Pagamento</h2>
-
-            <FormField name="paymentDay" label="Dia do vencimento:" required>
-              <Input
-                id="paymentDay"
-                name="paymentDay"
-                type="number"
-                min={1}
-                max={31}
-                placeholder="Ex: 10"
-                className="max-w-36"
-              />
-            </FormField>
-
-            <FormField name="paymentType" label="Forma de pagamento:" required>
-              <ToggleGroup.Root name="paymentType" value={paymentType} onValueChange={(v) => setPaymentType(v as "pix" | "bank_slip")}>
-                <ToggleGroup.Item value="pix">Pix</ToggleGroup.Item>
-                <ToggleGroup.Item value="bank_slip">Boleto</ToggleGroup.Item>
-              </ToggleGroup.Root>
-            </FormField>
-
-            <FormField name="valueType" label="Tipo de valor:" required>
-              <ToggleGroup.Root name="valueType" value={valueType} onValueChange={(v) => setValueType(v as "fixed" | "undetermined")}>
-                <ToggleGroup.Item value="fixed">Valor fixo</ToggleGroup.Item>
-                <ToggleGroup.Item value="undetermined">Valor indeterminado</ToggleGroup.Item>
-              </ToggleGroup.Root>
-            </FormField>
-
-            {valueType === "fixed" && (
-              <FormField name="amount" label="Valor (R$):" required>
-                <Input
-                  id="amount"
-                  name="amount"
-                  type="number"
-                  step="0.01"
-                  min="5"
-                  placeholder="0,00"
-                  className="max-w-48"
+          {/* contact selection */}
+          <Card.Root className="p-6">
+            <div className="mr-auto w-full max-w-xl flex flex-col gap-4">
+              <h2 className="font-semibold text-(--text-heading)">Contato</h2>
+              <FormField name="contactId" label="Pesquisar contato:" required>
+                <Combobox
+                  options={contactOptions}
+                  value={selectedContactId}
+                  onChange={setSelectedContactId}
+                  onSearchChange={(search) =>
+                    handleChangeFilter("name", search)
+                  }
+                  placeholder="Selecione um contato"
+                  searchPlaceholder="Pesquisar por nome..."
+                  emptyText="Nenhum contato encontrado."
                 />
-                <p className="text-xs text-(--text-muted)">
-                  Valor mínimo: R$ 5,00
-                </p>
               </FormField>
-            )}
+              {selectedContact && <ContactCard contact={selectedContact} />}
+            </div>
+          </Card.Root>
 
-            <FormField name="currentMonthPayment" label="Gerar cobrança para o mês atual:" required>
-              <ToggleGroup.Root name="currentMonthPayment" value={currentMonthPayment} onValueChange={(v) => setCurrentMonthPayment(v as "sim" | "não")}>
-                <ToggleGroup.Item value="sim">Sim</ToggleGroup.Item>
-                <ToggleGroup.Item value="não">Não</ToggleGroup.Item>
-              </ToggleGroup.Root>
-            </FormField>
+          {/* payment form */}
+          <Card.Root className="p-6">
+            <div className="mr-auto w-full max-w-xl flex flex-col gap-6">
+              <h2 className="font-semibold text-(--text-heading)">Pagamento</h2>
 
-            <FormField name="description" label="Descrição (opcional)">
-              <textarea
-                id="description"
-                name="description"
-                rows={3}
-                placeholder="Descreva a recorrência..."
-                className={cn(
-                  "w-full rounded-md border border-(--border) bg-(--input) px-3 py-2 text-sm",
-                  "text-(--foreground) placeholder:text-(--text-muted)",
-                  "outline-none focus-visible:ring-2 focus-visible:ring-(--ring) focus-visible:ring-offset-1",
-                  "disabled:cursor-not-allowed disabled:opacity-50 resize-none",
-                )}
+              <FormField name="paymentDay" label="Dia do vencimento:" required>
+                <Input
+                  id="paymentDay"
+                  name="paymentDay"
+                  type="number"
+                  min={1}
+                  max={31}
+                  placeholder="Ex: 10"
+                  className="max-w-36"
+                />
+              </FormField>
+
+              <FormField
+                name="paymentType"
+                label="Forma de pagamento:"
+                required
+              >
+                <ToggleGroup.Root
+                  name="paymentType"
+                  value={paymentType}
+                  onValueChange={(v) =>
+                    setPaymentType(v as "pix" | "bank_slip")
+                  }
+                >
+                  <ToggleGroup.Item value="pix">Pix</ToggleGroup.Item>
+                  <ToggleGroup.Item value="bank_slip">Boleto</ToggleGroup.Item>
+                </ToggleGroup.Root>
+              </FormField>
+
+              <FormField name="valueType" label="Tipo de valor:" required>
+                <ToggleGroup.Root
+                  name="valueType"
+                  value={valueType}
+                  onValueChange={(v) =>
+                    setValueType(v as "fixed" | "undetermined")
+                  }
+                >
+                  <ToggleGroup.Item value="fixed">Valor fixo</ToggleGroup.Item>
+                  <ToggleGroup.Item value="undetermined">
+                    Valor indeterminado
+                  </ToggleGroup.Item>
+                </ToggleGroup.Root>
+              </FormField>
+
+              {valueType === "fixed" && (
+                <FormField name="amount" label="Valor (R$):" required>
+                  <Input
+                    id="amount"
+                    name="amount"
+                    type="number"
+                    step="0.01"
+                    min="5"
+                    placeholder="0,00"
+                    className="max-w-48"
+                  />
+                  <p className="text-xs text-(--text-muted)">
+                    Valor mínimo: R$ 5,00
+                  </p>
+                </FormField>
+              )}
+
+              <FormField
+                name="currentMonthPayment"
+                label="Gerar cobrança para o mês atual:"
+                required
+              >
+                <ToggleGroup.Root
+                  name="currentMonthPayment"
+                  value={currentMonthPayment}
+                  onValueChange={(v) =>
+                    setCurrentMonthPayment(v as "sim" | "não")
+                  }
+                >
+                  <ToggleGroup.Item value="sim">Sim</ToggleGroup.Item>
+                  <ToggleGroup.Item value="não">Não</ToggleGroup.Item>
+                </ToggleGroup.Root>
+              </FormField>
+
+              <FormField name="description" label="Descrição (opcional)">
+                <textarea
+                  id="description"
+                  name="description"
+                  rows={3}
+                  placeholder="Descreva a recorrência..."
+                  className={cn(
+                    "w-full rounded-md border border-(--border) bg-(--input) px-3 py-2 text-sm",
+                    "text-(--foreground) placeholder:text-(--text-muted)",
+                    "outline-none focus-visible:ring-2 focus-visible:ring-(--ring) focus-visible:ring-offset-1",
+                    "disabled:cursor-not-allowed disabled:opacity-50 resize-none",
+                  )}
+                />
+              </FormField>
+
+              <SwitchField
+                name="activeNotification"
+                label="Enviar notificações ao doador"
+                checked={activeNotification}
+                onChange={setActiveNotification}
               />
-            </FormField>
+            </div>
+          </Card.Root>
 
-            <SwitchField
-              name="activeNotification"
-              label="Enviar notificações ao doador"
-              checked={activeNotification}
-              onChange={setActiveNotification}
-            />
-          </div>
-        </Card.Root>
-
-        <div className="ml-auto flex w-fit max-w-xl justify-end gap-3">
-          <Link to={`/campaign/${campaignId}/payment-statements`}>
-            <Button type="button" variant="outline">
-              Cancelar
+          <div className="ml-auto flex w-fit max-w-xl justify-end gap-3">
+            <Link to={`/campaign/${campaignId}/payment-statements`}>
+              <Button type="button" variant="outline">
+                Cancelar
+              </Button>
+            </Link>
+            <Button type="submit" disabled={isSubmitting || !selectedContactId}>
+              {isSubmitting ? "Salvando..." : "Salvar recorrência"}
             </Button>
-          </Link>
-          <Button type="submit" disabled={isSubmitting || !selectedContactId}>
-            {isSubmitting ? "Salvando..." : "Salvar recorrência"}
-          </Button>
-        </div>
-      </Form>
+          </div>
+        </Form>
       </FormErrorProvider>
     </div>
   );
