@@ -76,7 +76,7 @@ function CreateRecurrencePage() {
   const [valueType, setValueType] = React.useState<"fixed" | "undetermined">(
     "fixed",
   );
-  const [currentMonthPayment, setCurrentMonthPayment] = React.useState(false);
+  const [currentMonthPayment, setCurrentMonthPayment] = React.useState<"sim" | "não">("não");
   const [activeNotification, setActiveNotification] = React.useState(true);
   const selectedContact =
     contacts.find((c) => c.id === selectedContactId) ?? null;
@@ -207,12 +207,12 @@ function CreateRecurrencePage() {
               </FormField>
             )}
 
-            <SwitchField
-              name="currentMonthPayment"
-              label="Gerar cobrança para o mês atual"
-              checked={currentMonthPayment}
-              onChange={setCurrentMonthPayment}
-            />
+            <FormField name="currentMonthPayment" label="Gerar cobrança para o mês atual:" required>
+              <ToggleGroup.Root name="currentMonthPayment" value={currentMonthPayment} onValueChange={(v) => setCurrentMonthPayment(v as "sim" | "não")}>
+                <ToggleGroup.Item value="sim">Sim</ToggleGroup.Item>
+                <ToggleGroup.Item value="não">Não</ToggleGroup.Item>
+              </ToggleGroup.Root>
+            </FormField>
 
             <FormField name="description" label="Descrição (opcional)">
               <textarea
