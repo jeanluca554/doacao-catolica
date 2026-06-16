@@ -1,18 +1,22 @@
 import { ArrowLeft } from "lucide-react";
 import * as React from "react";
 import {
-  Form,
   Link,
   useLoaderData,
-  useNavigation,
   useParams,
+  useFetcher,
 } from "react-router";
+import {
+  FormErrorProvider,
+  FormField,
+} from "~/client/components/ui/form-field";
 import { Button } from "~/client/components/ui/button";
 import { Card } from "~/client/components/ui/card";
 import { Combobox } from "~/client/components/ui/combobox";
 import { Input } from "~/client/components/ui/input";
 import { Label } from "~/client/components/ui/label";
 import { Switch } from "~/client/components/ui/switch";
+import { ToggleGroup } from "~/client/components/ui/toggle-group";
 import type { ContactOption } from "~/domain/gateways/contacts";
 import type { CreateRecurrenceLoader } from "~/client/types/createRecurrenceLoader";
 import { cn } from "~/lib/utils";
@@ -23,38 +27,6 @@ const CATEGORY_MAP: Record<number, "donation" | "tithe"> = {
   2: "tithe",
 };
 
-function ToggleGroup({
-  name,
-  options,
-  value,
-  onChange,
-}: {
-  name: string;
-  options: { label: string; value: string }[];
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div className="flex gap-2">
-      <input type="hidden" name={name} value={value} />
-      {options.map((opt) => (
-        <button
-          key={opt.value}
-          type="button"
-          onClick={() => onChange(opt.value)}
-          className={cn(
-            "h-9 rounded-md border px-4 text-sm font-medium transition-colors",
-            value === opt.value
-              ? "border-(--primary) bg-(--primary) text-white"
-              : "border-(--border) bg-(--card) text-(--foreground) hover:bg-(--accent)",
-          )}
-        >
-          {opt.label}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 function SwitchField({
   name,
@@ -94,8 +66,8 @@ function ContactCard({ contact }: { contact: ContactOption }) {
 function CreateRecurrencePage() {
   const { contacts, campaign } = useLoaderData<CreateRecurrenceLoader>();
   const { campaignId } = useParams<{ campaignId: string }>();
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
+  const { Form, state, data } = useFetcher();
+  const isSubmitting = state === "submitting";
 
   const [selectedContactId, setSelectedContactId] = React.useState("");
   const [paymentType, setPaymentType] = React.useState<"pix" | "bank_slip">(
@@ -106,13 +78,6 @@ function CreateRecurrencePage() {
   );
   const [currentMonthPayment, setCurrentMonthPayment] = React.useState(false);
   const [activeNotification, setActiveNotification] = React.useState(true);
-  const [showDiscount, setShowDiscount] = React.useState(false);
-  const [showInterest, setShowInterest] = React.useState(false);
-  const [showFine, setShowFine] = React.useState(false);
-  const [fineType, setFineType] = React.useState<"fixed" | "percentage">(
-    "fixed",
-  );
-
   const selectedContact =
     contacts.find((c) => c.id === selectedContactId) ?? null;
   const category = CATEGORY_MAP[campaign.type] ?? "donation";
@@ -138,6 +103,7 @@ function CreateRecurrencePage() {
         </h1>
       </div>
 
+      <FormErrorProvider fieldErrors={data?.cause?.fieldErrors}>
       <Form method="post" className="space-y-6">
         <input type="hidden" name="accountId" value={campaign.accountId} />
         <input type="hidden" name="category" value={category} />
@@ -178,8 +144,7 @@ function CreateRecurrencePage() {
         <Card.Root className="p-6">
           <div className="mr-auto w-full max-w-xl flex flex-col gap-4">
             <h2 className="font-semibold text-(--text-heading)">Contato</h2>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="contactSearch">Pesquisar contato *</Label>
+            <FormField name="contactId" label="Pesquisar contato:" required>
               <Combobox
                 options={contactOptions}
                 value={selectedContactId}
@@ -189,7 +154,7 @@ function CreateRecurrencePage() {
                 searchPlaceholder="Pesquisar por nome..."
                 emptyText="Nenhum contato encontrado."
               />
-            </div>
+            </FormField>
             {selectedContact && <ContactCard contact={selectedContact} />}
           </div>
         </Card.Root>
@@ -199,8 +164,7 @@ function CreateRecurrencePage() {
           <div className="mr-auto w-full max-w-xl flex flex-col gap-6">
             <h2 className="font-semibold text-(--text-heading)">Pagamento</h2>
 
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="paymentDay">Dia do vencimento *</Label>
+            <FormField name="paymentDay" label="Dia do vencimento:" required>
               <Input
                 id="paymentDay"
                 name="paymentDay"
@@ -209,39 +173,25 @@ function CreateRecurrencePage() {
                 max={31}
                 placeholder="Ex: 10"
                 className="max-w-36"
-                required
               />
-            </div>
+            </FormField>
 
-            <div className="flex flex-col gap-1.5">
-              <Label>Forma de pagamento *</Label>
-              <ToggleGroup
-                name="paymentType"
-                value={paymentType}
-                onChange={(v) => setPaymentType(v as "pix" | "bank_slip")}
-                options={[
-                  { label: "Pix", value: "pix" },
-                  { label: "Boleto", value: "bank_slip" },
-                ]}
-              />
-            </div>
+            <FormField name="paymentType" label="Forma de pagamento:" required>
+              <ToggleGroup.Root name="paymentType" value={paymentType} onValueChange={(v) => setPaymentType(v as "pix" | "bank_slip")}>
+                <ToggleGroup.Item value="pix">Pix</ToggleGroup.Item>
+                <ToggleGroup.Item value="bank_slip">Boleto</ToggleGroup.Item>
+              </ToggleGroup.Root>
+            </FormField>
 
-            <div className="flex flex-col gap-1.5">
-              <Label>Tipo de valor *</Label>
-              <ToggleGroup
-                name="valueType"
-                value={valueType}
-                onChange={(v) => setValueType(v as "fixed" | "undetermined")}
-                options={[
-                  { label: "Valor fixo", value: "fixed" },
-                  { label: "Valor indeterminado", value: "undetermined" },
-                ]}
-              />
-            </div>
+            <FormField name="valueType" label="Tipo de valor:" required>
+              <ToggleGroup.Root name="valueType" value={valueType} onValueChange={(v) => setValueType(v as "fixed" | "undetermined")}>
+                <ToggleGroup.Item value="fixed">Valor fixo</ToggleGroup.Item>
+                <ToggleGroup.Item value="undetermined">Valor indeterminado</ToggleGroup.Item>
+              </ToggleGroup.Root>
+            </FormField>
 
             {valueType === "fixed" && (
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="amount">Valor (R$) *</Label>
+              <FormField name="amount" label="Valor (R$):" required>
                 <Input
                   id="amount"
                   name="amount"
@@ -250,12 +200,11 @@ function CreateRecurrencePage() {
                   min="5"
                   placeholder="0,00"
                   className="max-w-48"
-                  required
                 />
                 <p className="text-xs text-(--text-muted)">
                   Valor mínimo: R$ 5,00
                 </p>
-              </div>
+              </FormField>
             )}
 
             <SwitchField
@@ -265,116 +214,7 @@ function CreateRecurrencePage() {
               onChange={setCurrentMonthPayment}
             />
 
-            {/* optional fields: discount, interest, fine */}
-            <div className="space-y-4 border-t border-(--border) pt-4">
-              <p className="text-sm font-medium text-(--text-muted)">
-                Condições financeiras (opcional)
-              </p>
-
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowDiscount((v) => !v)}
-                  className={cn(
-                    "h-8 rounded-md border px-3 text-sm transition-colors",
-                    showDiscount
-                      ? "border-(--primary) bg-(--primary)/10 text-(--primary)"
-                      : "border-(--border) bg-(--card) text-(--text-muted) hover:bg-(--accent)",
-                  )}
-                >
-                  {showDiscount ? "− Desconto" : "+ Desconto"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowInterest((v) => !v)}
-                  className={cn(
-                    "h-8 rounded-md border px-3 text-sm transition-colors",
-                    showInterest
-                      ? "border-(--primary) bg-(--primary)/10 text-(--primary)"
-                      : "border-(--border) bg-(--card) text-(--text-muted) hover:bg-(--accent)",
-                  )}
-                >
-                  {showInterest ? "− Juros" : "+ Juros"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowFine((v) => !v)}
-                  className={cn(
-                    "h-8 rounded-md border px-3 text-sm transition-colors",
-                    showFine
-                      ? "border-(--primary) bg-(--primary)/10 text-(--primary)"
-                      : "border-(--border) bg-(--card) text-(--text-muted) hover:bg-(--accent)",
-                  )}
-                >
-                  {showFine ? "− Multa" : "+ Multa"}
-                </button>
-              </div>
-
-              {showDiscount && (
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="discount">Desconto (R$)</Label>
-                  <Input
-                    id="discount"
-                    name="discount"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="0,00"
-                    className="max-w-48"
-                  />
-                </div>
-              )}
-
-              {showInterest && (
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="interest">Juros ao mês (%)</Label>
-                  <Input
-                    id="interest"
-                    name="interest"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    max="100"
-                    placeholder="0,00"
-                    className="max-w-48"
-                  />
-                </div>
-              )}
-
-              {showFine && (
-                <div className="space-y-3">
-                  <div className="flex flex-col gap-1.5">
-                    <Label>Tipo de multa</Label>
-                    <ToggleGroup
-                      name="fineType"
-                      value={fineType}
-                      onChange={(v) => setFineType(v as "fixed" | "percentage")}
-                      options={[
-                        { label: "Valor fixo (R$)", value: "fixed" },
-                        { label: "Percentual (%)", value: "percentage" },
-                      ]}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="fineValue">
-                      {fineType === "fixed" ? "Multa (R$)" : "Multa (%)"}
-                    </Label>
-                    <Input
-                      id="fineValue"
-                      name="fineValue"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      placeholder="0,00"
-                      className="max-w-48"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="description">Descrição (opcional)</Label>
+            <FormField name="description" label="Descrição (opcional)">
               <textarea
                 id="description"
                 name="description"
@@ -387,7 +227,7 @@ function CreateRecurrencePage() {
                   "disabled:cursor-not-allowed disabled:opacity-50 resize-none",
                 )}
               />
-            </div>
+            </FormField>
 
             <SwitchField
               name="activeNotification"
@@ -409,6 +249,7 @@ function CreateRecurrencePage() {
           </Button>
         </div>
       </Form>
+      </FormErrorProvider>
     </div>
   );
 }
