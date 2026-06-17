@@ -21,21 +21,6 @@ type ContactDetailCardProps = {
   };
 };
 
-function formatBirthDate(dateStr: string | null): string {
-  if (!dateStr) return "—";
-  const [year, month, day] = dateStr.slice(0, 10).split("-");
-  return `${day}/${month}/${year}`;
-}
-
-function formatCpf(cpf: string | null): string {
-  if (!cpf) return "—";
-  const digits = cpf.replace(/\D/g, "");
-  if (digits.length === 11) {
-    return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-  }
-  return cpf;
-}
-
 function ContactDetailCard({ contact }: ContactDetailCardProps) {
   const { name, cpf, birthDate, phone, email, avatar } = contact;
   const initials = getInitials(name);
@@ -59,7 +44,7 @@ function ContactDetailCard({ contact }: ContactDetailCardProps) {
       <div className="flex text-sm divide-x divide-border">
         <div className="pr-4">
           <p className="text-xs text-muted-foreground">Data de Nascimento</p>
-          <p className="text-foreground">{formatBirthDate(birthDate)}</p>
+          <p className="text-foreground">{birthDate}</p>
         </div>
         <div className="px-4">
           <p className="text-xs text-muted-foreground">CPF/CNPJ</p>

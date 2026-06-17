@@ -1,4 +1,4 @@
-import { formatDate } from "~/lib/formatDate";
+import { formatDate } from "@arkyn/shared";
 
 type CampaignConstructorProps = {
   id: string;
@@ -102,8 +102,20 @@ class Campaign {
       noEndDate: this.noEndDate,
       monthlyGoal: this.monthlyGoal,
       totalGoal: this.totalGoal,
-      startDate: formatDate(this.startDate),
-      endDate: formatDate(this.endDate),
+      startDate: this.startDate
+        ? formatDate(
+            [this.startDate.split("T")[0]],
+            "timestamp",
+            "DD/MM/YYYY - hh:mm",
+          )
+        : null,
+      endDate: this.endDate
+        ? formatDate(
+            [this.endDate.split("T")[0]],
+            "timestamp",
+            "DD/MM/YYYY - hh:mm",
+          )
+        : null,
       currentRevenue: this.currentRevenue ?? null,
       status: this.status,
       published: this.published,
