@@ -1,6 +1,13 @@
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
-import { Link, useLoaderData, useParams, useFetcher } from "react-router";
+import {
+  Link,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useParams,
+  useFetcher,
+} from "react-router";
 import {
   FormErrorProvider,
   FormField,
@@ -12,10 +19,10 @@ import { Input } from "~/client/components/ui/input";
 import { Label } from "~/client/components/ui/label";
 import { Switch } from "~/client/components/ui/switch";
 import { ToggleGroup } from "~/client/components/ui/toggle-group";
-import type { Contact } from "~/domain/views/contact";
 import type { CreateRecurrenceLoader } from "~/client/types/createRecurrenceLoader";
 import { cn } from "~/lib/utils";
 import { useFilter } from "~/client/hooks/useFilter";
+import { ContactDetailCard } from "./components/ContactDetailCard";
 
 const CATEGORY_MAP: Record<number, "donation" | "tithe"> = {
   1: "donation",
@@ -44,21 +51,18 @@ function SwitchField({
   );
 }
 
-function ContactCard({ contact }: { contact: Contact }) {
-  return (
-    <div className="rounded-md border border-(--border) bg-(--secondary) p-4">
-      <p className="font-medium text-(--foreground)">{contact.name}</p>
-    </div>
-  );
-}
-
 function CreateRecurrencePage() {
-  const { contacts, campaign } = useLoaderData<CreateRecurrenceLoader>();
+  const { contacts, campaign, contactDetail } =
+    useLoaderData<CreateRecurrenceLoader>();
   const { campaignId } = useParams<{ campaignId: string }>();
   const { Form, state, data } = useFetcher();
+  const navigate = useNavigate();
+  const location = useLocation();
   const isSubmitting = state === "submitting";
 
-  const [selectedContactId, setSelectedContactId] = useState("");
+  const [selectedContactId, setSelectedContactId] = useState(
+    contactDetail?.contactId ?? "",
+  );
   const [paymentType, setPaymentType] = useState<"pix" | "bank_slip">("pix");
   const [valueType, setValueType] = useState<"fixed" | "undetermined">(
     "fixed",
@@ -67,8 +71,7 @@ function CreateRecurrencePage() {
     "sim" | "não"
   >("sim");
   const [activeNotification, setActiveNotification] = useState(true);
-  const selectedContact =
-    contacts.find((c) => c.id === selectedContactId) ?? null;
+
   const category = CATEGORY_MAP[campaign.type] ?? "donation";
 
   const contactOptions = contacts.map((c) => ({
@@ -77,6 +80,17 @@ function CreateRecurrencePage() {
   }));
 
   const { handleChangeFilter } = useFilter("contacts");
+
+  function handleContactChange(contactId: string) {
+    setSelectedContactId(contactId);
+    const params = new URLSearchParams(location.search);
+    if (contactId) {
+      params.set("contactPublicId", contactId);
+    } else {
+      params.delete("contactPublicId");
+    }
+    navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+  }
 
   return (
     <div className="space-y-6">
@@ -96,17 +110,15 @@ function CreateRecurrencePage() {
         <Form method="post" className="space-y-6">
           <input type="hidden" name="accountId" value={campaign.accountId} />
           <input type="hidden" name="category" value={category} />
-
-          {/* hidden contact fields — populated via combobox selection */}
           <input
             type="hidden"
             name="contactId"
-            value={selectedContact?.id ?? ""}
+            value={contactDetail?.contactId ?? ""}
           />
           <input
             type="hidden"
             name="contactName"
-            value={selectedContact?.name ?? ""}
+            value={contactDetail?.name ?? ""}
           />
 
           {/* contact selection */}
@@ -117,7 +129,7 @@ function CreateRecurrencePage() {
                 <Combobox
                   options={contactOptions}
                   value={selectedContactId}
-                  onChange={setSelectedContactId}
+                  onChange={handleContactChange}
                   onSearchChange={(search) =>
                     handleChangeFilter("name", search)
                   }
@@ -126,7 +138,7 @@ function CreateRecurrencePage() {
                   emptyText="Nenhum contato encontrado."
                 />
               </FormField>
-              {selectedContact && <ContactCard contact={selectedContact} />}
+              {contactDetail && <ContactDetailCard contact={contactDetail} />}
             </div>
           </Card.Root>
 
@@ -243,7 +255,7 @@ function CreateRecurrencePage() {
                 Cancelar
               </Button>
             </Link>
-            <Button type="submit" disabled={isSubmitting || !selectedContactId}>
+            <Button type="submit" disabled={isSubmitting || !contactDetail}>
               {isSubmitting ? "Salvando..." : "Salvar recorrência"}
             </Button>
           </div>

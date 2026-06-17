@@ -15,6 +15,7 @@ const findOneContactSchema = z.object({
   birth_date: z.string().nullable(),
   phone: z.string().nullable(),
   email: z.string().nullable(),
+  avatar: z.string().nullable(),
 });
 
 type ExternalContactItem = z.infer<typeof externalContactItemSchema>;

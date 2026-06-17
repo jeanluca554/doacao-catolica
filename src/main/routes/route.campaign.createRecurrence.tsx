@@ -6,6 +6,7 @@ import { RouteAdapter } from "~/infra/adapters/routeAdapter";
 import { AuthService } from "~/infra/services/authService";
 import { getCampaign } from "../factories/campaign/getCampaignFactory";
 import { listContacts } from "../factories/contacts/listContactsFactory";
+import { findOneContact } from "../factories/contacts/findOneContactFactory";
 import { createRecurrence } from "../factories/createRecurrence/createRecurrenceFactory";
 
 export async function loader(args: Route.LoaderArgs) {
@@ -14,12 +15,15 @@ export async function loader(args: Route.LoaderArgs) {
   const user = await AuthService.getAuthStorage(adaptedRoute);
   if (!user) throw redirect("/sign-in");
 
-  const [contacts, campaign] = await Promise.all([
+  const contactPublicId = adaptedRoute.query.contactPublicId;
+
+  const [contacts, campaign, contactDetail] = await Promise.all([
     listContacts.handle(adaptedRoute),
     getCampaign.handle(adaptedRoute),
+    contactPublicId ? findOneContact.handle(adaptedRoute) : Promise.resolve(null),
   ]);
 
-  return { contacts, campaign };
+  return { contacts, campaign, contactDetail };
 }
 
 export async function action(args: Route.ActionArgs) {

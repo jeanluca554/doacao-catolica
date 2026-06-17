@@ -11,6 +11,7 @@ class ContactMapper {
       birthDate: external.birth_date,
       phone: external.phone,
       email: external.email,
+      avatar: external.avatar,
     });
   }
 }

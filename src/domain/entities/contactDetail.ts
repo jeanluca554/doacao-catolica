@@ -6,6 +6,7 @@ type ContactDetailConstructorProps = {
   birthDate: string | null;
   phone: string | null;
   email: string | null;
+  avatar: string | null;
 };
 
 type ContactDetailRestoreProps = ContactDetailConstructorProps;
@@ -18,6 +19,7 @@ class ContactDetail {
   birthDate: string | null;
   phone: string | null;
   email: string | null;
+  avatar: string | null;
 
   private constructor(props: ContactDetailConstructorProps) {
     this.contactId = props.contactId;
@@ -27,6 +29,7 @@ class ContactDetail {
     this.birthDate = props.birthDate;
     this.phone = props.phone;
     this.email = props.email;
+    this.avatar = props.avatar;
   }
 
   static restore(props: ContactDetailRestoreProps): ContactDetail {
@@ -42,6 +45,7 @@ class ContactDetail {
       birthDate: this.birthDate,
       phone: this.phone,
       email: this.email,
+      avatar: this.avatar,
     };
   }
 }

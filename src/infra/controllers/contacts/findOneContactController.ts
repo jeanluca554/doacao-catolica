@@ -10,7 +10,7 @@ class FindOneContactController {
     const user = await AuthService.getAuthStorage(route);
     if (!user) throw HttpAdapter.unauthorized("Unauthorized");
 
-    const { contactPublicId } = route.params;
+    const contactPublicId = route.query.contactPublicId;
     if (!contactPublicId)
       throw HttpAdapter.badRequest("contactPublicId is required");
 
