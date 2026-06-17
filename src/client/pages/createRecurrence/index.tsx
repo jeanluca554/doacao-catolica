@@ -64,12 +64,10 @@ function CreateRecurrencePage() {
     contactDetail?.contactId ?? "",
   );
   const [paymentType, setPaymentType] = useState<"pix" | "bank_slip">("pix");
-  const [valueType, setValueType] = useState<"fixed" | "undetermined">(
-    "fixed",
+  const [valueType, setValueType] = useState<"fixed" | "undetermined">("fixed");
+  const [currentMonthPayment, setCurrentMonthPayment] = useState<"sim" | "não">(
+    "sim",
   );
-  const [currentMonthPayment, setCurrentMonthPayment] = useState<
-    "sim" | "não"
-  >("sim");
   const [activeNotification, setActiveNotification] = useState(true);
 
   const category = CATEGORY_MAP[campaign.type] ?? "donation";
@@ -95,12 +93,11 @@ function CreateRecurrencePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Link
-          to={`/campaign/${campaignId}/payment-statements`}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-(--border) hover:bg-(--accent)"
-        >
-          <ArrowLeft size={16} />
-        </Link>
+        <Button variant="outline" size="icon" asChild>
+          <Link to={`/campaign/${campaignId}/payment-statements`}>
+            <ArrowLeft size={16} />
+          </Link>
+        </Button>
         <h1 className="text-xl font-semibold text-(--text-heading)">
           Adicionar recorrência
         </h1>

@@ -43,36 +43,40 @@ function ContactDetailCard({ contact }: ContactDetailCardProps) {
   const initials = getInitials(name);
 
   return (
-    <div className="rounded-lg border border-(--border) bg-(--background) p-4 space-y-4">
+    <div className="rounded-lg border border-border  p-4 space-y-4">
       <div className="flex items-center gap-3">
-        <div className="h-12 w-12 rounded-full bg-(--muted) flex items-center justify-center overflow-hidden shrink-0">
+        <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0">
           {avatar ? (
-            <img src={avatar} alt={name} className="h-full w-full object-cover" />
+            <img
+              src={avatar}
+              alt={name}
+              className="h-full w-full object-cover"
+            />
           ) : (
-            <span className="text-sm font-medium text-(--text-muted)">
+            <span className="text-sm font-medium text-muted-foreground">
               {initials}
             </span>
           )}
         </div>
-        <span className="flex-1 font-semibold text-(--foreground)">{name}</span>
+        <span className="flex-1 font-semibold text-foreground">{name}</span>
         <Button type="button" variant="outline" size="sm" className="gap-1.5">
           <Pencil size={14} />
           Editar
         </Button>
       </div>
 
-      <div className="flex text-sm divide-x divide-(--border)">
+      <div className="flex text-sm divide-x divide-border">
         <div className="pr-4">
-          <p className="text-xs text-(--text-muted)">Data de Nascimento</p>
-          <p className="text-(--foreground)">{formatBirthDate(birthDate)}</p>
+          <p className="text-xs text-muted-foreground">Data de Nascimento</p>
+          <p className="text-foreground">{formatBirthDate(birthDate)}</p>
         </div>
         <div className="px-4">
-          <p className="text-xs text-(--text-muted)">CPF/CNPJ</p>
-          <p className="text-(--foreground)">{formatCpf(cpf)}</p>
+          <p className="text-xs text-muted-foreground">CPF/CNPJ</p>
+          <p className="text-foreground">{formatCpf(cpf)}</p>
         </div>
         <div className="pl-4">
-          <p className="text-xs text-(--text-muted)">Whatsapp</p>
-          <p className="text-(--foreground)">{phone ?? "—"}</p>
+          <p className="text-xs text-muted-foreground">Whatsapp</p>
+          <p className="text-foreground">{phone ?? "—"}</p>
         </div>
       </div>
 
@@ -84,7 +88,11 @@ function ContactDetailCard({ contact }: ContactDetailCardProps) {
 
       {!email && (
         <FormField name="contactEmail" label="E-mail:">
-          <Input name="contactEmail" type="email" placeholder="email@example.com" />
+          <Input
+            name="contactEmail"
+            type="email"
+            placeholder="email@example.com"
+          />
         </FormField>
       )}
       {!phone && (

@@ -12,17 +12,18 @@ const button = tv({
   ],
   variants: {
     variant: {
-      default: "bg-(--primary) text-(--primary-foreground) hover:brightness-95",
-      secondary: "bg-(--secondary) text-(--primary) hover:brightness-95",
+      default: "bg-primary text-primary-foreground hover:brightness-95",
+      secondary: "bg-secondary text-primary hover:brightness-95",
       outline:
-        "border border-(--border) bg-transparent text-(--primary) hover:brightness-95",
-      ghost: "bg-transparent text-(--primary) hover:brightness-95",
-      danger:
-        "bg-(--destructive) text-(--destructive-foreground) hover:brightness-95",
+        "border border-border bg-transparent text-primary hover:brightness-95",
+      ghost: "bg-transparent text-primary hover:brightness-95",
+      danger: "bg-destructive text-destructive-foreground hover:brightness-95",
     },
     size: {
-      default: "rounded-md min-h-11 px-4 py-2 w-full",
-      icon: "size-8 rounded-full p-0",
+      default: "rounded-md h-11 px-4 py-2",
+      sm: "h-9 rounded-md px-3",
+      lg: "h-13 rounded-md px-8",
+      icon: "size-8 rounded-md p-0",
     },
   },
   defaultVariants: {
