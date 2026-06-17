@@ -10,11 +10,11 @@ function CampaignBanner() {
   const { campaign } = useLoaderData<CampaignLayoutLoader>();
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-14 w-full items-center justify-between gap-3 border-b border-(--border) bg-(--card) px-4 py-2 sm:px-7">
+    <header className="sticky top-0 z-30 flex min-h-14 w-full items-center justify-between gap-3 border-b border-border bg-card px-4 py-2 sm:px-7">
       <div className="flex min-w-0 items-center gap-2">
         <SidebarTrigger className="shrink-0 md:hidden" />
         <div className="flex min-w-0 flex-col gap-0.5">
-          <p className="truncate text-xl font-semibold leading-6 text-(--text-heading)">
+          <p className="truncate text-xl font-semibold leading-6 text-foreground">
             {campaign.name}
           </p>
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
@@ -24,7 +24,7 @@ function CampaignBanner() {
             >
               {campaign.status ? "Ativo" : "Inativo"}
             </Badge>
-            <span className="hidden text-(--border) sm:inline">•</span>
+            <span className="hidden text-border sm:inline">•</span>
             <span className="text-(--text-muted)">
               {"Arrecadado: "}
               <span className="font-semibold text-[rgb(var(--spotlight-primary))]">
