@@ -1,5 +1,5 @@
-import { ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, TriangleAlert } from "lucide-react";
+import { useState, useEffect } from "react";
 import {
   Link,
   useLoaderData,
@@ -22,8 +22,10 @@ import { RadioGroup } from "~/client/components/ui/radio-group";
 import { Select } from "~/client/components/ui/select";
 import { Switch } from "~/client/components/ui/switch";
 import { Textarea } from "~/client/components/ui/textarea";
+import { Alert } from "~/client/components/ui/alert";
 import type { CreateRecurrenceLoader } from "~/client/types/createRecurrenceLoader";
 import { useFilter } from "~/client/hooks/useFilter";
+import { cn } from "~/lib/utils";
 import { ContactDetailCard } from "./components/ContactDetailCard";
 
 const CATEGORY_MAP: Record<number, "donation" | "tithe"> = {
@@ -36,19 +38,28 @@ function SwitchField({
   label,
   checked,
   onChange,
+  disabled,
 }: {
   name: string;
   label: string;
   checked: boolean;
   onChange: (v: boolean) => void;
+  disabled?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-4">
+    <div className={cn("flex items-center gap-4", disabled && "opacity-50")}>
       <input type="hidden" name={name} value={checked ? "true" : "false"} />
-      <Label className="cursor-pointer" onClick={() => onChange(!checked)}>
+      <Label
+        className={cn("cursor-pointer", disabled && "cursor-not-allowed")}
+        onClick={() => !disabled && onChange(!checked)}
+      >
         {label}
       </Label>
-      <Switch checked={checked} onCheckedChange={onChange} />
+      <Switch
+        checked={checked}
+        onCheckedChange={onChange}
+        disabled={disabled}
+      />
     </div>
   );
 }
@@ -71,6 +82,47 @@ function CreateRecurrencePage() {
     "sim",
   );
   const [activeNotification, setActiveNotification] = useState(true);
+  const [phoneInput, setPhoneInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+
+  useEffect(() => {
+    setPhoneInput("");
+    setEmailInput("");
+  }, [contactDetail?.contactId]);
+
+  const effectivePhone = contactDetail?.phone ?? (phoneInput.trim() || null);
+  const effectiveEmail = contactDetail?.email ?? (emailInput.trim() || null);
+
+  const notificationAlert = (() => {
+    if (!contactDetail) return null;
+    if (!effectivePhone && !effectiveEmail) {
+      return {
+        disabled: true,
+        message:
+          "Não é possível ativar as notificações para esse contato, pois ele não possui e-mail e Whatsapp cadastrados.",
+      };
+    }
+    if (!effectiveEmail) {
+      return {
+        disabled: false,
+        message:
+          "Esse contato receberá mensagens somente por Whatsapp pois não tem e-mail cadastrado.",
+      };
+    }
+    if (!effectivePhone) {
+      return {
+        disabled: false,
+        message:
+          "Esse contato receberá mensagens somente por e-mail pois não tem Whatsapp cadastrado.",
+      };
+    }
+    return null;
+  })();
+
+  const isNotificationDisabled = notificationAlert?.disabled ?? false;
+  const effectiveNotification = isNotificationDisabled
+    ? false
+    : activeNotification;
 
   const category = CATEGORY_MAP[campaign.type] ?? "donation";
 
@@ -137,7 +189,13 @@ function CreateRecurrencePage() {
                   emptyText="Nenhum contato encontrado."
                 />
               </FormField>
-              {contactDetail && <ContactDetailCard contact={contactDetail} />}
+              {contactDetail && (
+                <ContactDetailCard
+                  contact={contactDetail}
+                  onPhoneChange={setPhoneInput}
+                  onEmailChange={setEmailInput}
+                />
+              )}
             </div>
           </Card.Root>
 
@@ -254,11 +312,24 @@ function CreateRecurrencePage() {
                 />
               </FormField>
 
+              {notificationAlert && (
+                <Alert.Root variant="warning">
+                  <Alert.Icon>
+                    <TriangleAlert size={16} />
+                  </Alert.Icon>
+                  <Alert.Title>Atenção!</Alert.Title>
+                  <Alert.Description>
+                    {notificationAlert.message}
+                  </Alert.Description>
+                </Alert.Root>
+              )}
+
               <SwitchField
                 name="activeNotification"
                 label="Enviar notificações ao doador"
-                checked={activeNotification}
+                checked={effectiveNotification}
                 onChange={setActiveNotification}
+                disabled={isNotificationDisabled}
               />
             </div>
           </Card.Root>

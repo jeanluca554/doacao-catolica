@@ -20,9 +20,11 @@ type ContactDetailCardProps = {
     email: string | null;
     avatar: string | null;
   };
+  onPhoneChange?: (value: string) => void;
+  onEmailChange?: (value: string) => void;
 };
 
-function ContactDetailCard({ contact }: ContactDetailCardProps) {
+function ContactDetailCard({ contact, onPhoneChange, onEmailChange }: ContactDetailCardProps) {
   const { name, cpf, birthDate, phone, email, avatar } = contact;
   const initials = getInitials(name);
 
@@ -71,12 +73,21 @@ function ContactDetailCard({ contact }: ContactDetailCardProps) {
             name="contactEmail"
             type="email"
             placeholder="email@example.com"
+            onChange={(e) => onEmailChange?.(e.target.value)}
           />
         </FormField>
       )}
       {!phone && (
         <FormField name="contactPhone" label="Whatsapp:">
-          <PhoneInput defaultCountry="BR" />
+          <PhoneInput
+            defaultCountry="BR"
+            onChange={(value) => {
+              // react-phone-number-input returns "+55" (country code only) when cleared,
+              // so only count as filled when there are digits beyond the country code
+              const digits = (value ?? "").replace(/\D/g, "");
+              onPhoneChange?.(digits.length > 2 ? (value ?? "") : "");
+            }}
+          />
         </FormField>
       )}
       {!birthDate && (
