@@ -16,6 +16,7 @@ import { Button } from "~/client/components/ui/button";
 import { Card } from "~/client/components/ui/card";
 import { Combobox } from "~/client/components/ui/combobox";
 import { Input } from "~/client/components/ui/input";
+import { CurrencyInput } from "~/client/components/ui/currency-input";
 import { Label } from "~/client/components/ui/label";
 import { RadioGroup } from "~/client/components/ui/radio-group";
 import { Select } from "~/client/components/ui/select";
@@ -207,16 +208,9 @@ function CreateRecurrencePage() {
               </FormField>
 
               {valueType === "fixed" && (
-                <FormField name="amount" label="Valor (R$):" required>
-                  <Input
-                    id="amount"
-                    name="amount"
-                    type="number"
-                    step="0.01"
-                    min="5"
-                    placeholder="0,00"
-                  />
-                  <p className="text-xs text-(--text-muted)">
+                <FormField name="amount" label="Valor:" required>
+                  <CurrencyInput min={5} />
+                  <p className="text-xs text-muted-foreground">
                     Valor mínimo: R$ 5,00
                   </p>
                 </FormField>

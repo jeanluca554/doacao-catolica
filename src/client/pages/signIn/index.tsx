@@ -8,11 +8,7 @@ import {
   FormErrorProvider,
   FormField,
 } from "~/client/components/ui/form-field";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/client/components/ui/input-group";
+import { InputGroup } from "~/client/components/ui/input-group";
 
 function SignInPage() {
   const { Form, state, data } = useFetcher();
@@ -44,29 +40,31 @@ function SignInPage() {
       <FormErrorProvider fieldErrors={data?.cause?.fieldErrors}>
         <Form method="POST" className="flex flex-col gap-3">
           <FormField name="email" label="E-mail:" required>
-            <InputGroup>
-              <InputGroupAddon align="inline-start">
+            <InputGroup.Root>
+              <InputGroup.Addon>
                 <Mail size={16} />
-              </InputGroupAddon>
-              <InputGroupInput
+              </InputGroup.Addon>
+              <InputGroup.Input
                 id="email"
                 type="text"
                 placeholder="Insira seu e-mail"
+                className="pl-9"
               />
-            </InputGroup>
+            </InputGroup.Root>
           </FormField>
 
           <FormField name="password" label="Senha:" required>
-            <InputGroup>
-              <InputGroupAddon align="inline-start">
+            <InputGroup.Root>
+              <InputGroup.Addon>
                 <Lock size={16} />
-              </InputGroupAddon>
-              <InputGroupInput
+              </InputGroup.Addon>
+              <InputGroup.Input
                 id="password"
                 type="password"
                 placeholder="Insira sua senha"
+                className="pl-9"
               />
-            </InputGroup>
+            </InputGroup.Root>
           </FormField>
 
           <Link

@@ -6,11 +6,7 @@ import {
   FormErrorProvider,
   FormField,
 } from "~/client/components/ui/form-field";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/client/components/ui/input-group";
+import { InputGroup } from "~/client/components/ui/input-group";
 
 function SignUpPage() {
   const { Form, state, data } = useFetcher();
@@ -31,39 +27,39 @@ function SignUpPage() {
           <input type="hidden" name="source" value="STANDARD" />
 
           <FormField name="name" label="Nome:" required>
-            <InputGroup>
-              <InputGroupAddon align="inline-start">
+            <InputGroup.Root>
+              <InputGroup.Addon>
                 <User size={16} />
-              </InputGroupAddon>
-              <InputGroupInput type="text" placeholder="Digite seu nome" />
-            </InputGroup>
+              </InputGroup.Addon>
+              <InputGroup.Input type="text" placeholder="Digite seu nome" className="pl-9" />
+            </InputGroup.Root>
           </FormField>
 
           <FormField name="email" label="E-mail:" required>
-            <InputGroup>
-              <InputGroupAddon align="inline-start">
+            <InputGroup.Root>
+              <InputGroup.Addon>
                 <Mail size={16} />
-              </InputGroupAddon>
-              <InputGroupInput type="text" placeholder="Digite seu e-mail" />
-            </InputGroup>
+              </InputGroup.Addon>
+              <InputGroup.Input type="text" placeholder="Digite seu e-mail" className="pl-9" />
+            </InputGroup.Root>
           </FormField>
 
           <FormField name="password" label="Senha:" required>
-            <InputGroup>
-              <InputGroupAddon align="inline-start">
+            <InputGroup.Root>
+              <InputGroup.Addon>
                 <Lock size={16} />
-              </InputGroupAddon>
-              <InputGroupInput type="password" placeholder="Digite sua senha" />
-            </InputGroup>
+              </InputGroup.Addon>
+              <InputGroup.Input type="password" placeholder="Digite sua senha" className="pl-9" />
+            </InputGroup.Root>
           </FormField>
 
           <FormField name="phone" label="Telefone:" required>
-            <InputGroup>
-              <InputGroupAddon align="inline-start">
+            <InputGroup.Root>
+              <InputGroup.Addon>
                 <Phone size={16} />
-              </InputGroupAddon>
-              <InputGroupInput type="tel" placeholder="(00) 00000-0000" />
-            </InputGroup>
+              </InputGroup.Addon>
+              <InputGroup.Input type="tel" placeholder="(00) 00000-0000" className="pl-9" />
+            </InputGroup.Root>
           </FormField>
 
           <Button
