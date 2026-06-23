@@ -8,6 +8,7 @@ import { getCampaign } from "../factories/campaign/getCampaignFactory";
 import { listContacts } from "../factories/contacts/listContactsFactory";
 import { findOneContact } from "../factories/contacts/findOneContactFactory";
 import { createRecurrence } from "../factories/createRecurrence/createRecurrenceFactory";
+import { ErrorHandlerAdapter } from "~/infra/adapters/errorHandlerAdapter";
 
 export async function loader(args: Route.LoaderArgs) {
   const adaptedRoute = await RouteAdapter.adaptRoute(args);
@@ -20,7 +21,9 @@ export async function loader(args: Route.LoaderArgs) {
   const [contacts, campaign, contactDetail] = await Promise.all([
     listContacts.handle(adaptedRoute),
     getCampaign.handle(adaptedRoute),
-    contactPublicId ? findOneContact.handle(adaptedRoute) : Promise.resolve(null),
+    contactPublicId
+      ? findOneContact.handle(adaptedRoute)
+      : Promise.resolve(null),
   ]);
 
   return { contacts, campaign, contactDetail };
@@ -29,7 +32,11 @@ export async function loader(args: Route.LoaderArgs) {
 export async function action(args: Route.ActionArgs) {
   const adaptedRoute = await RouteAdapter.adaptRoute(args);
 
-  await createRecurrence.handle(adaptedRoute);
+  try {
+    await createRecurrence.handle(adaptedRoute);
+  } catch (error) {
+    return ErrorHandlerAdapter.handle(error);
+  }
 
   const { campaignId } = adaptedRoute.params;
   throw redirect(`/campaign/${campaignId}/payment-statements`);

@@ -36,7 +36,7 @@ class SubscriptionGateway implements SubscriptionGatewayDTO {
         cpf_cnpj: cleanCpf(input.contactCpf),
         phone: formatPhone(input.contactPhone),
         birthdate: input.contactBirthDate,
-        reference: input.donatorId,
+        reference: input.donorId,
       },
       name: input.description ?? `Recorrência - ${input.contactName}`,
       description: input.description ?? `Recorrência - ${input.contactName}`,
@@ -47,7 +47,11 @@ class SubscriptionGateway implements SubscriptionGatewayDTO {
     };
 
     if (input.discount) {
-      body.discount = { value: input.discount, due_date_limit_days: 0, type: "fixed" };
+      body.discount = {
+        value: input.discount,
+        due_date_limit_days: 0,
+        type: "fixed",
+      };
     }
     if (input.interest) {
       body.interest = { value: input.interest };
@@ -62,7 +66,9 @@ class SubscriptionGateway implements SubscriptionGatewayDTO {
     });
 
     if (!apiResponse.success && apiResponse.status === 400) {
-      const uuid = (apiResponse.response as any)?.data?.uuid as string | undefined;
+      const uuid = (apiResponse.response as any)?.data?.uuid as
+        | string
+        | undefined;
       if (!uuid) throw HttpAdapter.badGateway(apiResponse.message);
 
       const { account_reference, create_payment, ...updateBody } = body as {
@@ -75,14 +81,17 @@ class SubscriptionGateway implements SubscriptionGatewayDTO {
         body: updateBody,
         headers,
       });
-      if (!putResponse.success) throw HttpAdapter.badGateway(putResponse.message);
+      if (!putResponse.success)
+        throw HttpAdapter.badGateway(putResponse.message);
 
       return uuid;
     }
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 
-    const schemaValidator = new SchemaValidatorAdapter(createSubscriptionResponseSchema);
+    const schemaValidator = new SchemaValidatorAdapter(
+      createSubscriptionResponseSchema,
+    );
     const data = schemaValidator.validate(apiResponse.response);
 
     return data.data.uuid;

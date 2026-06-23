@@ -1,3 +1,4 @@
+import type { ContactGatewayDTO } from "~/domain/gateways/contact";
 import type { DonorGatewayDTO } from "~/domain/gateways/donor";
 import type { SubscriptionGatewayDTO } from "~/domain/gateways/subscription";
 
@@ -9,6 +10,7 @@ type CreateRecurrenceInput = {
   contactPhone?: string;
   contactCpf?: string;
   contactBirthDate?: string;
+  missingFields?: true;
   // campaign
   accountId: number;
   campaignId: string;
@@ -30,12 +32,25 @@ type CreateRecurrenceInput = {
 
 class CreateRecurrenceUseCase {
   constructor(
+    private contactGateway: ContactGatewayDTO,
     private donorGateway: DonorGatewayDTO,
     private subscriptionGateway: SubscriptionGatewayDTO,
   ) {}
 
   async execute(input: CreateRecurrenceInput): Promise<void> {
-    const donatorId = await this.donorGateway.createDonor({
+    input.missingFields &&
+      (await this.contactGateway.updateContact({
+        id: input.contactId,
+        accountId: input.accountId,
+        name: input.contactName,
+        cpf: input.contactCpf,
+        birthDate: input.contactBirthDate,
+        email: input.contactEmail,
+        phone: input.contactPhone,
+        token: input.token,
+      }));
+
+    const donorId = await this.donorGateway.createDonor({
       accountId: input.accountId,
       name: input.contactName,
       cpf: input.contactCpf,
@@ -48,7 +63,7 @@ class CreateRecurrenceUseCase {
 
     await this.subscriptionGateway.createSubscription({
       accountReference: input.campaignId,
-      donatorId,
+      contactId: input.contactId,
       contactName: input.contactName,
       contactEmail: input.contactEmail,
       contactPhone: input.contactPhone,
@@ -66,6 +81,7 @@ class CreateRecurrenceUseCase {
       interest: input.interest,
       fineType: input.fineType,
       fineValue: input.fineValue,
+      donorId,
     });
   }
 }

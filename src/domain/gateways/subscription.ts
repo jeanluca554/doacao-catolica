@@ -1,6 +1,6 @@
 type CreateSubscriptionInput = {
   accountReference: string;
-  donatorId: string;
+  contactId: string;
   contactName: string;
   contactEmail?: string;
   contactPhone?: string;
@@ -18,6 +18,7 @@ type CreateSubscriptionInput = {
   interest?: number;
   fineType?: "fixed" | "percentage";
   fineValue?: number;
+  donorId: string;
 };
 
 type SubscriptionGatewayDTO = {
