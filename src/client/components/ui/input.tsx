@@ -22,6 +22,7 @@ function Input({ leftIcon: LeftIcon, className, ...props }: InputProps) {
           "placeholder:text-muted-foreground",
           "outline-none ring-offset-background",
           "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+          "group-data-invalid:border-destructive group-data-invalid:focus-visible:ring--destructive",
           "disabled:cursor-not-allowed disabled:opacity-50",
           LeftIcon && "pl-9",
           className,

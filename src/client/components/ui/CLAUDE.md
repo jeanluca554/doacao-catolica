@@ -89,6 +89,14 @@ const { root, dot, label } = badge({ variant });
 
 **Largura de inputs:** todo componente de entrada de dados (`Input`, `Select.Trigger`, `Textarea` e similares) deve ter `w-full` como padrão. Restrições de largura são responsabilidade do layout que os envolve, não do componente.
 
+**Estado de erro em inputs:** todo componente de entrada de dados deve reagir ao estado de erro do `FormField` pai via `group-data-[invalid]`:
+
+```tsx
+"group-data-[invalid]:border-(--destructive) group-data-[invalid]:focus-visible:ring-(--destructive)"
+```
+
+`FormField` expõe `data-invalid` no wrapper com a classe `group` quando há erro no campo. Usar sempre `group-data-[invalid]:` — não usar `aria-invalid:` para esse fim.
+
 ## Adicionando novos componentes (shadcn/ui)
 
 Para adicionar um componente do catálogo shadcn/ui:

@@ -28,7 +28,7 @@ function Trigger({
         "text-foreground data-placeholder:text-muted-foreground",
         "ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
         "disabled:cursor-not-allowed disabled:opacity-50",
-        "aria-invalid:border-destructive",
+        "group-data-invalid:border-destructive group-data-invalid:focus-visible:ring-destructive",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
         className,
       )}

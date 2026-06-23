@@ -43,21 +43,17 @@ function FormField({
     <FormFieldContext value={name}>
       <div
         data-invalid={hasError ? "" : undefined}
-        className={cn("flex flex-col gap-1.5", className)}
+        className={cn("group flex flex-col gap-1.5", className)}
       >
         <Label htmlFor={name} className="inline-flex items-baseline gap-0.5">
-          {required && (
-            <span className="text-(--destructive)">*</span>
-          )}
+          {required && <span className="text-destructive">*</span>}
           {label}
         </Label>
 
         {children}
 
         {hasError && (
-          <p className="text-xs font-medium text-(--destructive)">
-            {error}
-          </p>
+          <p className="text-xs font-medium text-destructive">{error}</p>
         )}
       </div>
     </FormFieldContext>

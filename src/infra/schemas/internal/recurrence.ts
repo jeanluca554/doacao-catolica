@@ -10,7 +10,11 @@ const createRecurrenceSchema = z.object({
   contactBirthDate: z.string().optional(),
   accountId: z.coerce.number(),
   category: z.enum(["donation", "tithe"]),
-  paymentDay: z.coerce.number().int().min(1).max(31),
+  paymentDay: z.coerce
+    .number()
+    .int()
+    .min(1, "Informe o dia do pagamento")
+    .max(31),
   paymentType: z.enum(["pix", "bank_slip"]),
   valueType: z.enum(["fixed", "undetermined"]),
   amount: z.coerce.number().optional(),
