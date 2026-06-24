@@ -1,5 +1,5 @@
 import { Eye, FileDown, FileSymlink, Plus } from "lucide-react";
-import { Link, useLoaderData, useParams } from "react-router";
+import { Link, useLoaderData, useLocation, useParams } from "react-router";
 import { Badge } from "~/client/components/ui/badge";
 import { Button } from "~/client/components/ui/button";
 import {
@@ -67,13 +67,31 @@ function ActionButton({
   );
 }
 
+function buildPageVisibleRange(current: number, total: number): number[] {
+  const delta = 2;
+  const start = Math.max(1, current - delta);
+  const end = Math.min(total, current + delta);
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+}
+
 function PaymentsTable() {
   const { campaignId } = useParams<{ campaignId: string }>();
   const { payments } = useLoaderData<PaymentStatementsLoader>();
+  const location = useLocation();
 
   const { data, meta } = payments;
   const totalPages = meta.totalPages;
   const currentPage = meta.page;
+
+  function pageSearch(page: number) {
+    const params = new URLSearchParams(location.search);
+    params.set("page", String(page));
+    return `${location.pathname}?${params.toString()}`;
+  }
+
+  const visiblePages = buildPageVisibleRange(currentPage, totalPages);
+  const showLeadingEllipsis = visiblePages[0] > 2;
+  const showTrailingEllipsis = visiblePages[visiblePages.length - 1] < totalPages - 1;
 
   return (
     <Card.Root className="gap-4 p-6">
@@ -172,29 +190,56 @@ function PaymentsTable() {
         <Pagination.Root>
           <Pagination.Content>
             <Pagination.Item>
-              <Pagination.Previous href="#" />
+              <Pagination.Previous
+                to={currentPage > 1 ? pageSearch(currentPage - 1) : undefined}
+                disabled={currentPage === 1}
+              />
             </Pagination.Item>
-            {Array.from({ length: Math.min(totalPages, 4) }, (_, i) => i + 1).map(
-              (page) => (
-                <Pagination.Item key={page}>
-                  <Pagination.Link href="#" isActive={page === currentPage}>
-                    {page}
-                  </Pagination.Link>
-                </Pagination.Item>
-              ),
+
+            {visiblePages[0] > 1 && (
+              <Pagination.Item>
+                <Pagination.Link to={pageSearch(1)} isActive={currentPage === 1}>
+                  1
+                </Pagination.Link>
+              </Pagination.Item>
             )}
-            {totalPages > 4 && (
-              <>
-                <Pagination.Item>
-                  <Pagination.Ellipsis />
-                </Pagination.Item>
-                <Pagination.Item>
-                  <Pagination.Link href="#">{totalPages}</Pagination.Link>
-                </Pagination.Item>
-              </>
+
+            {showLeadingEllipsis && (
+              <Pagination.Item>
+                <Pagination.Ellipsis />
+              </Pagination.Item>
             )}
+
+            {visiblePages.map((page) => (
+              <Pagination.Item key={page}>
+                <Pagination.Link to={pageSearch(page)} isActive={page === currentPage}>
+                  {page}
+                </Pagination.Link>
+              </Pagination.Item>
+            ))}
+
+            {showTrailingEllipsis && (
+              <Pagination.Item>
+                <Pagination.Ellipsis />
+              </Pagination.Item>
+            )}
+
+            {visiblePages[visiblePages.length - 1] < totalPages && (
+              <Pagination.Item>
+                <Pagination.Link
+                  to={pageSearch(totalPages)}
+                  isActive={currentPage === totalPages}
+                >
+                  {totalPages}
+                </Pagination.Link>
+              </Pagination.Item>
+            )}
+
             <Pagination.Item>
-              <Pagination.Next href="#" />
+              <Pagination.Next
+                to={currentPage < totalPages ? pageSearch(currentPage + 1) : undefined}
+                disabled={currentPage === totalPages}
+              />
             </Pagination.Item>
           </Pagination.Content>
         </Pagination.Root>

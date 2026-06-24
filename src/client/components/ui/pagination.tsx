@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import { Link as RouterLink } from "react-router";
 import { cn } from "~/lib/utils";
 import type { ComponentProps } from "react";
 
@@ -23,32 +24,65 @@ function Item({ ...props }: ComponentProps<"li">) {
   return <li {...props} />;
 }
 
-type LinkProps = ComponentProps<"a"> & { isActive?: boolean };
+type LinkProps = ComponentProps<"a"> & { isActive?: boolean; to?: string };
 
-function Link({ className, isActive, ...props }: LinkProps) {
+function Link({ className, isActive, to, ...props }: LinkProps) {
+  const cls = cn(
+    "flex size-7 items-center justify-center rounded text-sm font-semibold",
+    isActive
+      ? "bg-(--primary) text-(--primary-foreground)"
+      : "text-(--muted-foreground) hover:bg-(--muted)",
+    className,
+  );
+
+  if (to !== undefined) {
+    return (
+      <RouterLink
+        to={to}
+        aria-current={isActive ? "page" : undefined}
+        className={cls}
+        {...(props as any)}
+      />
+    );
+  }
+
   return (
     <a
       aria-current={isActive ? "page" : undefined}
-      className={cn(
-        "flex size-7 items-center justify-center rounded text-sm font-semibold",
-        isActive
-          ? "bg-(--primary) text-(--primary-foreground)"
-          : "text-(--muted-foreground) hover:bg-(--muted)",
-        className
-      )}
+      className={cls}
       {...props}
     />
   );
 }
 
-function Previous({ className, ...props }: ComponentProps<"a">) {
+type NavProps = ComponentProps<"a"> & { to?: string; disabled?: boolean };
+
+function Previous({ className, to, disabled, ...props }: NavProps) {
+  const cls = cn(
+    "flex size-7 items-center justify-center rounded text-(--muted-foreground) hover:bg-(--muted)",
+    disabled && "pointer-events-none opacity-40",
+    className,
+  );
+
+  if (to !== undefined) {
+    return (
+      <RouterLink
+        to={to}
+        aria-label="Página anterior"
+        aria-disabled={disabled}
+        className={cls}
+        {...(props as any)}
+      >
+        <ChevronLeft size={16} />
+      </RouterLink>
+    );
+  }
+
   return (
     <a
       aria-label="Página anterior"
-      className={cn(
-        "flex size-7 items-center justify-center rounded text-(--muted-foreground) hover:bg-(--muted)",
-        className
-      )}
+      aria-disabled={disabled}
+      className={cls}
       {...props}
     >
       <ChevronLeft size={16} />
@@ -56,14 +90,32 @@ function Previous({ className, ...props }: ComponentProps<"a">) {
   );
 }
 
-function Next({ className, ...props }: ComponentProps<"a">) {
+function Next({ className, to, disabled, ...props }: NavProps) {
+  const cls = cn(
+    "flex size-7 items-center justify-center rounded text-(--muted-foreground) hover:bg-(--muted)",
+    disabled && "pointer-events-none opacity-40",
+    className,
+  );
+
+  if (to !== undefined) {
+    return (
+      <RouterLink
+        to={to}
+        aria-label="Próxima página"
+        aria-disabled={disabled}
+        className={cls}
+        {...(props as any)}
+      >
+        <ChevronRight size={16} />
+      </RouterLink>
+    );
+  }
+
   return (
     <a
       aria-label="Próxima página"
-      className={cn(
-        "flex size-7 items-center justify-center rounded text-(--muted-foreground) hover:bg-(--muted)",
-        className
-      )}
+      aria-disabled={disabled}
+      className={cls}
       {...props}
     >
       <ChevronRight size={16} />
