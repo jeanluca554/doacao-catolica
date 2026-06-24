@@ -28,6 +28,8 @@ type PaymentConstructorProps = {
   dueDate: string | null;
   paidDate: string | null;
   confirmedDate: string | null;
+  notifiedByEmail: boolean;
+  notifiedByWhatsApp: boolean;
 };
 
 class Payment {
@@ -40,6 +42,8 @@ class Payment {
   readonly dueDate: string | null;
   readonly paidDate: string | null;
   readonly confirmedDate: string | null;
+  readonly notifiedByEmail: boolean;
+  readonly notifiedByWhatsApp: boolean;
 
   private constructor(props: PaymentConstructorProps) {
     this.id = props.id;
@@ -51,6 +55,8 @@ class Payment {
     this.dueDate = props.dueDate;
     this.paidDate = props.paidDate;
     this.confirmedDate = props.confirmedDate;
+    this.notifiedByEmail = props.notifiedByEmail;
+    this.notifiedByWhatsApp = props.notifiedByWhatsApp;
   }
 
   static restore(props: PaymentConstructorProps): Payment {
@@ -70,6 +76,8 @@ class Payment {
       paymentType: PAYMENT_TYPE_MAP[this.paymentType] ?? this.paymentType,
       dueDate: this.dueDate ?? "—",
       paidDate: this.paidDate ?? this.confirmedDate ?? null,
+      notifiedByEmail: this.notifiedByEmail,
+      notifiedByWhatsApp: this.notifiedByWhatsApp,
     };
   }
 }

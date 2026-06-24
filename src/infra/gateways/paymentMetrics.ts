@@ -84,6 +84,12 @@ class PaymentMetricsGateway implements PaymentMetricsGatewayDTO {
           dueDate: item.payment_due_date,
           paidDate: item.payment_paid_date,
           confirmedDate: item.payment_confirmed_date,
+          notifiedByEmail: item.notifications.some(
+            (n) => n.channel === "email" && n.notified === 1,
+          ),
+          notifiedByWhatsApp: item.notifications.some(
+            (n) => n.channel === "whatsapp" && n.notified === 1,
+          ),
         }),
       ),
       meta: {

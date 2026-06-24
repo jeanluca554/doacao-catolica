@@ -1,4 +1,4 @@
-import { Eye, FileDown, FileSymlink, Plus } from "lucide-react";
+import { Eye, FileDown, FileSymlink, Mail, Plus } from "lucide-react";
 import { Link, useLoaderData, useParams } from "react-router";
 import { Badge } from "~/client/components/ui/badge";
 import { Button } from "~/client/components/ui/button";
@@ -111,6 +111,7 @@ function PaymentsTable() {
             <Table.Head>Tipo</Table.Head>
             <Table.Head>Valor</Table.Head>
             <Table.Head>Status</Table.Head>
+            <Table.Head className="text-center">Notificado por</Table.Head>
             <Table.Head>Forma de pagamento</Table.Head>
             <Table.Head>Vencimento</Table.Head>
             <Table.Head>Pago em</Table.Head>
@@ -131,6 +132,19 @@ function PaymentsTable() {
                 <Badge variant={STATUS_BADGE[payment.status] ?? "info"}>
                   {payment.status}
                 </Badge>
+              </Table.Cell>
+              <Table.Cell>
+                <div className="flex items-center justify-center gap-1.5">
+                  {payment.notifiedByEmail && (
+                    <Mail size={15} className="text-(--text-muted)" />
+                  )}
+                  {payment.notifiedByWhatsApp && (
+                    <WhatsAppIcon
+                      size={15}
+                      className="text-[rgb(var(--spotlight-success))]"
+                    />
+                  )}
+                </div>
               </Table.Cell>
               <Table.Cell>
                 <Badge variant={PAYMENT_TYPE_BADGE[payment.paymentType] ?? "info"}>

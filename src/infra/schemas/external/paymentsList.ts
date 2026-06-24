@@ -20,7 +20,12 @@ const externalPaymentItemSchema = z.object({
   payment_paid_date: z.string().nullable(),
   payment_confirmed_date: z.string().nullable(),
   customer: externalPaymentCustomerSchema,
-  notifications: z.array(z.unknown()),
+  notifications: z.array(
+    z.object({
+      channel: z.string(),
+      notified: z.number(),
+    }),
+  ),
 });
 
 const externalPaymentsListSchema = z.object({
