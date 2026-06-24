@@ -19,7 +19,7 @@ import {
 import { WhatsAppIcon } from "~/client/components/ui/whatsapp-icon";
 import type { PaymentStatementsLoader } from "~/client/types/paymentStatementsLoader";
 
-type BadgeVariant = "success" | "danger" | "warning" | "info";
+type BadgeVariant = "success" | "danger" | "warning" | "info" | "neutral";
 
 const STATUS_BADGE: Record<string, BadgeVariant> = {
   "Disponível para saque": "success",
@@ -42,7 +42,8 @@ const ORIGIN_BADGE: Record<string, BadgeVariant> = {
 const PAYMENT_TYPE_BADGE: Record<string, BadgeVariant> = {
   Pix: "info",
   "Pix automático": "info",
-  Boleto: "warning",
+  Boleto: "info",
+  "Cartão de crédito": "info",
 };
 
 function ActionButton({
@@ -147,7 +148,9 @@ function PaymentsTable() {
                 </div>
               </Table.Cell>
               <Table.Cell>
-                <Badge variant={PAYMENT_TYPE_BADGE[payment.paymentType] ?? "info"}>
+                <Badge
+                  variant={PAYMENT_TYPE_BADGE[payment.paymentType] ?? "info"}
+                >
                   {payment.paymentType}
                 </Badge>
               </Table.Cell>
@@ -156,7 +159,10 @@ function PaymentsTable() {
               <Table.Cell>
                 <div className="flex items-center justify-center gap-0.5">
                   <ActionButton tooltip="Visualizar detalhes">
-                    <Eye size={16} className="text-[rgb(var(--spotlight-info))]" />
+                    <Eye
+                      size={16}
+                      className="text-[rgb(var(--spotlight-info))]"
+                    />
                   </ActionButton>
                   <ActionButton tooltip="Link da fatura">
                     <FileSymlink

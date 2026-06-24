@@ -12,6 +12,7 @@ const badge = tv({
       warning:
         "bg-[rgba(var(--spotlight-warning),0.1)] text-[rgb(var(--spotlight-warning))]",
       info: "bg-[rgba(var(--spotlight-info),0.1)] text-[rgb(var(--spotlight-info))]",
+      neutral: "bg-(--muted) text-(--text-muted)",
     },
   },
   defaultVariants: {

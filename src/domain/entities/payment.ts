@@ -76,7 +76,7 @@ class Payment {
       origin: this.origin === "subscription" ? "Recorrente" : "Pontual",
       paymentType: PAYMENT_TYPE_MAP[this.paymentType] ?? this.paymentType,
       dueDate: this.dueDate ?? "—",
-      paidDate: this.paidDate ?? this.confirmedDate ?? null,
+      paidDate: this.paidDate?.split(" ")[0] ?? this.confirmedDate ?? null,
       notifiedByEmail: this.notifiedByEmail,
       notifiedByWhatsApp: this.notifiedByWhatsApp,
     };
