@@ -9,8 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "~/client/components/ui/dropdown-menu";
 import { Card } from "~/client/components/ui/card";
-import { Pagination } from "~/client/components/ui/pagination";
 import { Table } from "~/client/components/ui/table";
+import { TablePagination } from "~/client/components/ui/table-pagination";
 import {
   Tooltip,
   TooltipContent,
@@ -67,31 +67,18 @@ function ActionButton({
   );
 }
 
-function buildPageVisibleRange(current: number, total: number): number[] {
-  const delta = 2;
-  const start = Math.max(1, current - delta);
-  const end = Math.min(total, current + delta);
-  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-}
-
 function PaymentsTable() {
   const { campaignId } = useParams<{ campaignId: string }>();
   const { payments } = useLoaderData<PaymentStatementsLoader>();
   const location = useLocation();
 
   const { data, meta } = payments;
-  const totalPages = meta.totalPages;
-  const currentPage = meta.page;
 
-  function pageSearch(page: number) {
+  function buildPageUrl(page: number) {
     const params = new URLSearchParams(location.search);
     params.set("page", String(page));
     return `${location.pathname}?${params.toString()}`;
   }
-
-  const visiblePages = buildPageVisibleRange(currentPage, totalPages);
-  const showLeadingEllipsis = visiblePages[0] > 2;
-  const showTrailingEllipsis = visiblePages[visiblePages.length - 1] < totalPages - 1;
 
   return (
     <Card.Root className="gap-4 p-6">
@@ -184,65 +171,11 @@ function PaymentsTable() {
       </Table.Root>
 
       <Card.Footer className="flex-col items-center gap-3 sm:flex-row sm:justify-between">
-        <p className="text-sm text-(--text-muted)">
-          Exibindo {currentPage} de {totalPages} páginas
-        </p>
-        <Pagination.Root>
-          <Pagination.Content>
-            <Pagination.Item>
-              <Pagination.Previous
-                to={currentPage > 1 ? pageSearch(currentPage - 1) : undefined}
-                disabled={currentPage === 1}
-              />
-            </Pagination.Item>
-
-            {visiblePages[0] > 1 && (
-              <Pagination.Item>
-                <Pagination.Link to={pageSearch(1)} isActive={currentPage === 1}>
-                  1
-                </Pagination.Link>
-              </Pagination.Item>
-            )}
-
-            {showLeadingEllipsis && (
-              <Pagination.Item>
-                <Pagination.Ellipsis />
-              </Pagination.Item>
-            )}
-
-            {visiblePages.map((page) => (
-              <Pagination.Item key={page}>
-                <Pagination.Link to={pageSearch(page)} isActive={page === currentPage}>
-                  {page}
-                </Pagination.Link>
-              </Pagination.Item>
-            ))}
-
-            {showTrailingEllipsis && (
-              <Pagination.Item>
-                <Pagination.Ellipsis />
-              </Pagination.Item>
-            )}
-
-            {visiblePages[visiblePages.length - 1] < totalPages && (
-              <Pagination.Item>
-                <Pagination.Link
-                  to={pageSearch(totalPages)}
-                  isActive={currentPage === totalPages}
-                >
-                  {totalPages}
-                </Pagination.Link>
-              </Pagination.Item>
-            )}
-
-            <Pagination.Item>
-              <Pagination.Next
-                to={currentPage < totalPages ? pageSearch(currentPage + 1) : undefined}
-                disabled={currentPage === totalPages}
-              />
-            </Pagination.Item>
-          </Pagination.Content>
-        </Pagination.Root>
+        <TablePagination
+          currentPage={meta.page}
+          totalPages={meta.totalPages}
+          buildPageUrl={buildPageUrl}
+        />
       </Card.Footer>
     </Card.Root>
   );
