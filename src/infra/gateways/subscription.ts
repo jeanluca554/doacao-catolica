@@ -7,6 +7,7 @@ import { HttpAdapter } from "../adapters/httpAdapter";
 import { SchemaValidatorAdapter } from "../adapters/schemaValidatorAdapter";
 import { donationApi } from "../http/donationApi";
 import { createSubscriptionResponseSchema } from "../schemas/external/createSubscription";
+import { formatDate } from "@arkyn/shared";
 
 function cleanCpf(cpf?: string) {
   return cpf ? cpf.replace(/\D/g, "") : undefined;
@@ -35,7 +36,9 @@ class SubscriptionGateway implements SubscriptionGatewayDTO {
         name: input.contactName,
         cpf_cnpj: cleanCpf(input.contactCpf),
         phone: formatPhone(input.contactPhone),
-        birthdate: input.contactBirthDate,
+        birthdate: input.contactBirthDate
+          ? formatDate([input.contactBirthDate], "brazilianDate", "YYYY-MM-DD")
+          : undefined,
         reference: input.donorId,
       },
       name: input.description ?? `Recorrência - ${input.contactName}`,
