@@ -6,15 +6,12 @@ import { api } from "../http/api";
 import { UserMapper } from "../mappers/user";
 import { externalUserSchema } from "../schemas/external/user";
 
-import { environmentVariables as env } from "~/main/config/environmentVariables";
-
 class UserGateway implements UserGatewayDTO {
   async meUser(token: string): Promise<User> {
-    const url = `/${env.API_DATABASE}/me`;
+    const url = `/me`;
     const apiResponse = await api.get(url, {
       token,
     });
-    console.log("apiResponse", apiResponse);
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 

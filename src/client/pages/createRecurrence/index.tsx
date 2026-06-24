@@ -8,6 +8,7 @@ import {
   useParams,
   useFetcher,
 } from "react-router";
+import { useActionToast } from "~/client/hooks/useActionToast";
 import {
   FormErrorProvider,
   FormField,
@@ -57,6 +58,13 @@ function CreateRecurrencePage() {
     setPhoneInput("");
     setEmailInput("");
   }, [contactDetail?.contactId]);
+
+  useActionToast(data);
+
+  useEffect(() => {
+    if (data?.toast?.type !== "success") return;
+    navigate(`/campaign/${campaignId}/payment-statements`);
+  }, [data?.toast?.type]);
 
   const effectivePhone = contactDetail?.phone ?? (phoneInput.trim() || null);
   const effectiveEmail = contactDetail?.email ?? (emailInput.trim() || null);

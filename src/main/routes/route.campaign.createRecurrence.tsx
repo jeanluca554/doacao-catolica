@@ -38,8 +38,12 @@ export async function action(args: Route.ActionArgs) {
     return ErrorHandlerAdapter.handle(error);
   }
 
-  const { campaignId } = adaptedRoute.params;
-  throw redirect(`/campaign/${campaignId}/payment-statements`);
+  return {
+    toast: {
+      message: "Recorrência criada com sucesso!",
+      type: "success" as const,
+    },
+  };
 }
 
 export function ErrorBoundary() {

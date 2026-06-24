@@ -42,14 +42,11 @@ const externalCampaignSchema = z.object({
 });
 
 const listCampaignsSchema = z.object({
-  data: z.array(externalCampaignSchema),
-  meta: z.object({
-    currentPage: z.number(),
-    itemsPerPage: z.number(),
-    totalItems: z.number(),
-    totalPages: z.number(),
-    sortBy: z.array(z.string()),
-  }),
+  items: z.array(externalCampaignSchema),
+  total: z.number(),
+  current_page: z.number(),
+  per_page: z.number(),
+  last_page: z.number(),
 });
 
 export { externalCampaignSchema, listCampaignsSchema, type ExternalCampaign };
