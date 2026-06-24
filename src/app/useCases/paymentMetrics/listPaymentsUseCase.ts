@@ -1,4 +1,4 @@
-import { PaymentMetricsSearchParams } from "~/app/search/paymentMetricsSearchParams";
+import { PaymentsListSearchParams } from "~/app/search/paymentsListSearchParams";
 import type { PaymentMetricsGatewayDTO } from "~/domain/gateways/paymentMetrics";
 import { getMonthDates } from "~/lib/getMonthDates";
 
@@ -14,9 +14,9 @@ class ListPaymentsUseCase {
     const { campaignPublicId, page } = input;
     const { firstDayOfMonth, lastDayOfMonth } = getMonthDates(0);
 
-    const searchParams = new PaymentMetricsSearchParams({
+    const searchParams = new PaymentsListSearchParams({
       page: page ?? 1,
-      filter: { start_date: firstDayOfMonth, end_date: lastDayOfMonth },
+      filter: { start_date: firstDayOfMonth, end_date: lastDayOfMonth, per_page: 20 },
     });
 
     const result = await this.gateway.listPayments(campaignPublicId, searchParams);

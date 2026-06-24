@@ -1,4 +1,5 @@
 import type { PaymentMetricsSearchParams } from "~/app/search/paymentMetricsSearchParams";
+import type { PaymentsListSearchParams } from "~/app/search/paymentsListSearchParams";
 import type { SearchResult } from "~/app/shared/searchResult";
 import type { Payment } from "../entities/payment";
 
@@ -20,7 +21,7 @@ type PaymentMetricsGatewayDTO = {
   ): Promise<PaymentMetricsData>;
   listPayments(
     campaignPublicId: string,
-    searchParams: PaymentMetricsSearchParams,
+    searchParams: PaymentsListSearchParams,
   ): Promise<SearchResult<Payment>>;
 };
 

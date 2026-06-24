@@ -1,4 +1,5 @@
 import type { PaymentMetricsSearchParams } from "~/app/search/paymentMetricsSearchParams";
+import type { PaymentsListSearchParams } from "~/app/search/paymentsListSearchParams";
 import { SearchResult } from "~/app/shared/searchResult";
 import { Payment } from "~/domain/entities/payment";
 import type {
@@ -55,7 +56,7 @@ class PaymentMetricsGateway implements PaymentMetricsGatewayDTO {
 
   async listPayments(
     campaignPublicId: string,
-    searchParams: PaymentMetricsSearchParams,
+    searchParams: PaymentsListSearchParams,
   ): Promise<SearchResult<Payment>> {
     let url = `/api/metrics/payments/${campaignPublicId}`;
     url += searchParams.toExternal(["pageLimit"]);
@@ -66,7 +67,9 @@ class PaymentMetricsGateway implements PaymentMetricsGatewayDTO {
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 
-    const schemaValidator = new SchemaValidatorAdapter(externalPaymentsListSchema);
+    const schemaValidator = new SchemaValidatorAdapter(
+      externalPaymentsListSchema,
+    );
     const data = schemaValidator.validate(apiResponse.response.data);
 
     return new SearchResult({

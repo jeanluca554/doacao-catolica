@@ -39,6 +39,7 @@ function Link({ className, isActive, to, ...props }: LinkProps) {
     return (
       <RouterLink
         to={to}
+        preventScrollReset
         aria-current={isActive ? "page" : undefined}
         className={cls}
         {...(props as any)}
@@ -68,6 +69,7 @@ function Previous({ className, to, disabled, ...props }: NavProps) {
     return (
       <RouterLink
         to={to}
+        preventScrollReset
         aria-label="Página anterior"
         aria-disabled={disabled}
         className={cls}
@@ -101,6 +103,7 @@ function Next({ className, to, disabled, ...props }: NavProps) {
     return (
       <RouterLink
         to={to}
+        preventScrollReset
         aria-label="Próxima página"
         aria-disabled={disabled}
         className={cls}

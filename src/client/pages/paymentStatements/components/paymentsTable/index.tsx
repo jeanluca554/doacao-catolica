@@ -1,5 +1,5 @@
 import { Eye, FileDown, FileSymlink, Plus } from "lucide-react";
-import { Link, useLoaderData, useLocation, useParams } from "react-router";
+import { Link, useLoaderData, useParams } from "react-router";
 import { Badge } from "~/client/components/ui/badge";
 import { Button } from "~/client/components/ui/button";
 import {
@@ -70,15 +70,8 @@ function ActionButton({
 function PaymentsTable() {
   const { campaignId } = useParams<{ campaignId: string }>();
   const { payments } = useLoaderData<PaymentStatementsLoader>();
-  const location = useLocation();
 
   const { data, meta } = payments;
-
-  function buildPageUrl(page: number) {
-    const params = new URLSearchParams(location.search);
-    params.set("page", String(page));
-    return `${location.pathname}?${params.toString()}`;
-  }
 
   return (
     <Card.Root className="gap-4 p-6">
@@ -171,11 +164,7 @@ function PaymentsTable() {
       </Table.Root>
 
       <Card.Footer className="flex-col items-center gap-3 sm:flex-row sm:justify-between">
-        <TablePagination
-          currentPage={meta.page}
-          totalPages={meta.totalPages}
-          buildPageUrl={buildPageUrl}
-        />
+        <TablePagination currentPage={meta.page} totalPages={meta.totalPages} />
       </Card.Footer>
     </Card.Root>
   );
