@@ -1,22 +1,21 @@
-import { ChevronsUpDown } from "lucide-react";
+import { useState } from "react";
 import {
-  BarChart,
   BarChart2,
-  Bell,
-  Calendar,
+  ChevronDown,
+  ChevronsUpDown,
+  CircleHelp,
   Heart,
   LayoutDashboard,
-  Megaphone,
-  Plug,
-  ScrollText,
+  MessageSquare,
   Settings,
-  UserCheck,
   Users,
   Users2,
+  Wallet,
 } from "lucide-react";
-import { NavLink, useMatch, useParams } from "react-router";
+import { NavLink, useLocation, useMatch, useParams } from "react-router";
 import { useRoot } from "~/client/hooks/useRoot";
 import { cn } from "~/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "~/client/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -27,13 +26,22 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarTrigger,
 } from "~/client/components/ui/sidebar";
+
+type SubNavItem = {
+  label: string;
+  path?: string;
+};
 
 type NavItem = {
   icon: React.ElementType;
   label: string;
   path?: string;
+  subItems?: SubNavItem[];
 };
 
 type NavSection = {
@@ -43,40 +51,29 @@ type NavSection = {
 
 const sections: NavSection[] = [
   {
-    title: "",
-    items: [{ icon: LayoutDashboard, label: "Dashboard", path: "home" }],
-  },
-  {
-    title: "GESTÃO",
+    title: "Campanha",
     items: [
+      { icon: LayoutDashboard, label: "Dashboard", path: "home" },
       { icon: Heart, label: "Doações" },
-      { icon: Megaphone, label: "Campanhas" },
-      { icon: Bell, label: "Notificações enviadas", path: "notifications" },
-      { icon: UserCheck, label: "Doadores" },
-      { icon: Calendar, label: "Eventos" },
-      { icon: Users, label: "Voluntários" },
+      { icon: Users, label: "Doadores" },
+      {
+        icon: Wallet,
+        label: "Financeiro",
+        subItems: [
+          { label: "Extrato Financeiro", path: "payment-statements" },
+          { label: "Transferências" },
+        ],
+      },
+      { icon: BarChart2, label: "Relatórios" },
+      { icon: MessageSquare, label: "Mensagens" },
     ],
   },
   {
-    title: "FINANCEIRO",
+    title: "Sistema",
     items: [
-      { icon: ScrollText, label: "Extratos de pagamentos", path: "payment-statements" },
-    ],
-  },
-  {
-    title: "RELATÓRIOS",
-    items: [
-      { icon: BarChart, label: "Relatório mensal" },
-      { icon: BarChart2, label: "Relatório anual" },
-      { icon: ScrollText, label: "Recibos" },
-    ],
-  },
-  {
-    title: "CONFIGURAÇÕES",
-    items: [
-      { icon: Settings, label: "Geral" },
-      { icon: Users2, label: "Equipe" },
-      { icon: Plug, label: "Integrações" },
+      { icon: Users2, label: "Colaboradores" },
+      { icon: Settings, label: "Configurações" },
+      { icon: CircleHelp, label: "Ajuda" },
     ],
   },
 ];
@@ -95,25 +92,24 @@ function NavItemRow({
   label,
   path,
   basePath,
-}: NavItem & { basePath: string }) {
+}: {
+  icon: React.ElementType;
+  label: string;
+  path?: string;
+  basePath: string;
+}) {
   const to = path ? `${basePath}/${path}` : null;
   const match = useMatch(to ?? "/__no_route__");
   const isActive = !!match && !!to;
 
   return (
-    <SidebarMenuItem className="relative">
-      <div
-        className={cn(
-          "absolute -left-2 top-1/2 -translate-y-1/2 h-7.5 w-1 rounded-r shrink-0",
-          isActive ? "bg-sidebar-primary" : "bg-transparent",
-        )}
-      />
+    <SidebarMenuItem>
       {to ? (
         <SidebarMenuButton
           asChild
           isActive={isActive}
           tooltip={label}
-          className={cn(isActive && "[&>svg]:text-(--primary)")}
+          className="rounded-xl"
         >
           <NavLink to={to} end>
             <Icon size={18} />
@@ -121,10 +117,74 @@ function NavItemRow({
           </NavLink>
         </SidebarMenuButton>
       ) : (
-        <SidebarMenuButton tooltip={label} className="cursor-default opacity-60">
+        <SidebarMenuButton
+          tooltip={label}
+          className="cursor-default opacity-60 rounded-xl"
+        >
           <Icon size={18} />
           <span>{label}</span>
         </SidebarMenuButton>
+      )}
+    </SidebarMenuItem>
+  );
+}
+
+function CollapsibleNavItem({
+  icon: Icon,
+  label,
+  subItems,
+  basePath,
+}: {
+  icon: React.ElementType;
+  label: string;
+  subItems: SubNavItem[];
+  basePath: string;
+}) {
+  const { pathname } = useLocation();
+  const hasActiveChild = subItems.some(
+    (item) => item.path && pathname === `${basePath}/${item.path}`,
+  );
+  const [open, setOpen] = useState(hasActiveChild);
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        isActive={hasActiveChild}
+        tooltip={label}
+        onClick={() => setOpen((o) => !o)}
+        className="rounded-xl"
+      >
+        <Icon size={18} />
+        <span>{label}</span>
+        <ChevronDown
+          className={cn(
+            "ml-auto shrink-0 transition-transform duration-200",
+            open && "-rotate-180",
+          )}
+        />
+      </SidebarMenuButton>
+      {open && (
+        <SidebarMenuSub>
+          {subItems.map((item) => {
+            const to = item.path ? `${basePath}/${item.path}` : null;
+            const isActive = !!to && pathname === to;
+            return (
+              <SidebarMenuSubItem key={item.label}>
+                {to ? (
+                  <SidebarMenuSubButton asChild isActive={isActive}>
+                    <NavLink to={to} end>
+                      {item.label}
+                    </NavLink>
+                  </SidebarMenuSubButton>
+                ) : (
+                  <SidebarMenuSubButton className="cursor-default opacity-60">
+                    {item.label}
+                  </SidebarMenuSubButton>
+                )}
+              </SidebarMenuSubItem>
+            );
+          })}
+        </SidebarMenuSub>
       )}
     </SidebarMenuItem>
   );
@@ -137,10 +197,16 @@ function UserProfile() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" className="cursor-default">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-sidebar-primary text-[0.7rem] font-extrabold text-sidebar">
-            {initials}
-          </div>
+        <SidebarMenuButton
+          size="lg"
+          className="cursor-default bg-sidebar-accent/50 hover:bg-sidebar-accent/70 rounded-lg"
+        >
+          <Avatar>
+            <AvatarImage src={user?.avatar} alt={user?.name} />
+            <AvatarFallback className="bg-sidebar-primary text-[0.7rem] font-extrabold text-white">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold text-sidebar-foreground">
               {user?.name}
@@ -172,27 +238,38 @@ function AppSidebar() {
           alt="Logo"
           className="h-8 w-auto shrink-0 group-data-[collapsible=icon]:hidden"
         />
-        <SidebarTrigger className="text-sidebar-foreground/60 hover:bg-transparent hover:text-sidebar-foreground" />
       </SidebarHeader>
 
       <SidebarContent>
         {sections.map((section) => (
-          <SidebarGroup key={section.title || "__root__"}>
-            {section.title ? (
-              <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-widest text-sidebar-foreground/60">
-                {section.title}
-              </SidebarGroupLabel>
-            ) : null}
+          <SidebarGroup key={section.title}>
+            <SidebarGroupLabel>{section.title}</SidebarGroupLabel>
             <SidebarMenu>
-              {section.items.map((item) => (
-                <NavItemRow key={item.label} {...item} basePath={basePath} />
-              ))}
+              {section.items.map((item) =>
+                item.subItems ? (
+                  <CollapsibleNavItem
+                    key={item.label}
+                    icon={item.icon}
+                    label={item.label}
+                    subItems={item.subItems}
+                    basePath={basePath}
+                  />
+                ) : (
+                  <NavItemRow
+                    key={item.label}
+                    icon={item.icon}
+                    label={item.label}
+                    path={item.path}
+                    basePath={basePath}
+                  />
+                ),
+              )}
             </SidebarMenu>
           </SidebarGroup>
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border/30 pb-3">
+      <SidebarFooter className="border-t border-sidebar-border/50 pb-3">
         <UserProfile />
       </SidebarFooter>
     </Sidebar>

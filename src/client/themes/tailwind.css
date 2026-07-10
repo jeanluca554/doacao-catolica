@@ -88,16 +88,14 @@
     --chart-3: oklch(0.702 0.191 47.604); /* orange #f97316 */
     --chart-4: oklch(0.627 0.265 303.901); /* purple #8b5cf6 */
     --chart-5: oklch(0.548 0.186 151.329); /* green  #059669 */
-    --sidebar: oklch(0.148 0.044 264); /* #0a1929 dark navy */
-    --sidebar-foreground: oklch(0.968 0.007 247.896); /* #f1f5f9 */
-    --sidebar-primary: oklch(0.467 0.22 263); /* #1040cf */
-    --sidebar-primary-foreground: oklch(0.968 0.007 247.896);
-    --sidebar-accent: oklch(
-      0.22 0.04 264
-    ); /* slightly lighter navy for hover */
-    --sidebar-accent-foreground: oklch(0.968 0.007 247.896);
-    --sidebar-border: oklch(0.22 0.04 264);
-    --sidebar-ring: oklch(0.467 0.22 263);
+    --sidebar: oklch(1 0 0); /* white */
+    --sidebar-foreground: oklch(0.35 0.01 265); /* #46484e */
+    --sidebar-primary: oklch(0.52 0.228 263); /* #116ddc blue */
+    --sidebar-primary-foreground: oklch(1 0 0);
+    --sidebar-accent: oklch(0.968 0.018 265); /* #f2f5ff light blue */
+    --sidebar-accent-foreground: oklch(0.50 0.22 268); /* #3a64f2 */
+    --sidebar-border: oklch(0.928 0.013 255); /* light gray */
+    --sidebar-ring: oklch(0.50 0.22 268); /* #3a64f2 */
     --sidebar-width: 17rem; /* 272px — match do Figma */
     --sidebar-width-mobile: 18rem;
     --sidebar-width-icon: 3rem; /* largura colapsado */
