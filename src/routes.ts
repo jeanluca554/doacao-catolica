@@ -31,6 +31,7 @@ export default [
     route("notifications", "./main/routes/route.campaign.notifications.tsx"),
     route("payment-statements", "./main/routes/route.campaign.paymentStatements.tsx"),
     route("create-recurrence", "./main/routes/route.campaign.createRecurrence.tsx"),
+    route("create-one-time-payment", "./main/routes/route.campaign.createOneTimePayment.tsx"),
   ]),
 
   route("treatment/:treatmentId", "./main/routes/layout.treatmentLayout.tsx", [
