@@ -56,12 +56,17 @@ function draftFromParams(sp: URLSearchParams): FilterDraft {
 
 type FilterDrawerProps = {
   donors: { id: string; name: string }[];
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-function FilterDrawer({ donors }: FilterDrawerProps) {
+function FilterDrawer({ donors, open: openProp, onOpenChange: onOpenChangeProp }: FilterDrawerProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [open, setOpen] = useState(false);
+  const [openInternal, setOpenInternal] = useState(false);
+  const isControlled = openProp !== undefined;
+  const open = isControlled ? openProp : openInternal;
+  const setOpen = onOpenChangeProp ?? setOpenInternal;
   const [draft, setDraft] = useState<FilterDraft>(
     draftFromParams(new URLSearchParams()),
   );
@@ -147,21 +152,23 @@ function FilterDrawer({ donors }: FilterDrawerProps) {
       )}
 
       <Sheet open={open} onOpenChange={handleOpenChange}>
-        <SheetTrigger asChild>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            className="relative size-9 bg-card"
-          >
-            <ListFilter size={16} />
-            {filterCount > 0 && (
-              <span className="absolute -top-1.5 -left-1.5 flex size-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-white">
-                {filterCount}
-              </span>
-            )}
-          </Button>
-        </SheetTrigger>
+        {!isControlled && (
+          <SheetTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="relative size-9 bg-card"
+            >
+              <ListFilter size={16} />
+              {filterCount > 0 && (
+                <span className="absolute -top-1.5 -left-1.5 flex size-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-white">
+                  {filterCount}
+                </span>
+              )}
+            </Button>
+          </SheetTrigger>
+        )}
 
         <SheetContent side="right">
           <SheetHeader>

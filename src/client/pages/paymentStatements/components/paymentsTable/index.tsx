@@ -10,7 +10,9 @@ import {
   SlidersHorizontal,
   Zap,
 } from "lucide-react";
+import { useState } from "react";
 import { Link, useLoaderData, useParams } from "react-router";
+import { FilterDrawer } from "../filterDrawer";
 import { Avatar, AvatarFallback } from "~/client/components/ui/avatar";
 import { Badge } from "~/client/components/ui/badge";
 import { Button } from "~/client/components/ui/button";
@@ -82,7 +84,7 @@ function ActionsPopover() {
         <Button
           variant="ghost"
           size="icon"
-          className="size-9 rounded-xl text-muted-foreground"
+          className="size-9 text-muted-foreground"
         >
           <MoreHorizontal size={18} />
         </Button>
@@ -124,7 +126,8 @@ function ActionsPopover() {
 
 function PaymentsTable() {
   const { campaignId } = useParams<{ campaignId: string }>();
-  const { payments } = useLoaderData<PaymentStatementsLoader>();
+  const { payments, donors } = useLoaderData<PaymentStatementsLoader>();
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const { data, meta } = payments;
 
@@ -140,14 +143,16 @@ function PaymentsTable() {
         </div>
         <Button
           variant="outline"
-          className="h-11 min-h-0 shrink-0 gap-2 rounded-xl px-4 text-sm"
+          className="h-11 min-h-0 shrink-0 gap-2 px-4 text-sm"
+          onClick={() => setFilterOpen(true)}
         >
           <SlidersHorizontal size={16} />
           Filtros
         </Button>
+        <FilterDrawer donors={donors.data} open={filterOpen} onOpenChange={setFilterOpen} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="h-11 min-h-0 shrink-0 gap-2 rounded-xl px-4 text-sm">
+            <Button className="h-11 min-h-0 shrink-0 gap-2 px-4 text-sm">
               <Plus size={16} />
               Adicionar
             </Button>

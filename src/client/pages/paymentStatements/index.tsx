@@ -4,6 +4,7 @@ import {
   Banknote,
   Clock,
   DollarSign,
+  Download,
   Globe,
   RefreshCw,
   TrendingUp,
@@ -15,20 +16,24 @@ import {
 } from "lucide-react";
 import { useLoaderData, useLocation, useMatches } from "react-router";
 import type { PaymentStatementsLoader } from "~/client/types/paymentStatementsLoader";
-import { FilterDrawer } from "./components/filterDrawer";
+import { Button } from "~/client/components/ui/button";
 import { MetricCard } from "./components/metricCard";
 import type { MetricCardProps } from "./components/metricCard";
 import { PaymentsTable } from "./components/paymentsTable";
 import { PERIOD_OPTIONS, PeriodSelect } from "./components/periodSelect";
 
 function PaymentStatementsPage() {
-  const { metrics, donors } = useLoaderData<PaymentStatementsLoader>();
+  const { metrics } = useLoaderData<PaymentStatementsLoader>();
 
   const location = useLocation();
   const matches = useMatches();
-  const period = new URLSearchParams(location.search).get("period") ?? "currentMonth";
-  const periodLabel = PERIOD_OPTIONS.find((o) => o.value === period)?.label ?? "Mês atual";
-  const campaignData = matches.find((m) => m.data && typeof m.data === "object" && "campaign" in m.data)?.data as { campaign: { name: string } } | undefined;
+  const period =
+    new URLSearchParams(location.search).get("period") ?? "currentMonth";
+  const periodLabel =
+    PERIOD_OPTIONS.find((o) => o.value === period)?.label ?? "Mês atual";
+  const campaignData = matches.find(
+    (m) => m.data && typeof m.data === "object" && "campaign" in m.data,
+  )?.data as { campaign: { name: string } } | undefined;
   const campaignName = campaignData?.campaign?.name;
 
   const metricCards: MetricCardProps[] = [
@@ -76,7 +81,11 @@ function PaymentStatementsPage() {
       iconBg: "bg-orange-100",
       iconColor: "text-orange-700",
       breakdown: [
-        { icon: Clock, label: "Aguardando pgto", value: metrics.awaitingRelease },
+        {
+          icon: Clock,
+          label: "Aguardando pgto",
+          value: metrics.awaitingRelease,
+        },
         { icon: AlertCircle, label: "Em atraso", value: metrics.overdue },
         { icon: XCircle, label: "Cancelados", value: metrics.canceled },
       ],
@@ -98,7 +107,10 @@ function PaymentStatementsPage() {
         </div>
         <div className="flex items-center gap-3">
           <PeriodSelect />
-          <FilterDrawer donors={donors.data} />
+          <Button variant="outline">
+            <Download size={16} />
+            Exportar
+          </Button>
         </div>
       </div>
 

@@ -1,3 +1,4 @@
+import { Calendar } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
 import { Select } from "~/client/components/ui/select";
 
@@ -98,23 +99,19 @@ function PeriodSelect() {
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-sm text-(--text-muted) whitespace-nowrap">
-        Período:
-      </span>
-      <Select.Root value={period} onValueChange={handleSelect}>
-        <Select.Trigger className="w-52 min-h-9">
-          <Select.Value />
-        </Select.Trigger>
-        <Select.Content position="popper" align="end">
-          {PERIOD_OPTIONS.map((option) => (
-            <Select.Item key={option.value} value={option.value}>
-              {option.label}
-            </Select.Item>
-          ))}
-        </Select.Content>
-      </Select.Root>
-    </div>
+    <Select.Root value={period} onValueChange={handleSelect}>
+      <Select.Trigger className="w-auto rounded-xl bg-background px-4">
+        <Calendar size={16} className="shrink-0 text-muted-foreground" />
+        <Select.Value />
+      </Select.Trigger>
+      <Select.Content position="popper" align="end">
+        {PERIOD_OPTIONS.map((option) => (
+          <Select.Item key={option.value} value={option.value}>
+            {option.label}
+          </Select.Item>
+        ))}
+      </Select.Content>
+    </Select.Root>
   );
 }
 

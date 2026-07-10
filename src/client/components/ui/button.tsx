@@ -20,10 +20,10 @@ const button = tv({
       danger: "bg-destructive text-destructive-foreground hover:brightness-95",
     },
     size: {
-      default: "rounded-md h-11 px-4 py-2",
-      sm: "h-9 rounded-md px-3",
-      lg: "h-13 rounded-md px-8",
-      icon: "size-8 rounded-md p-0",
+      default: "rounded-xl h-11 px-4 py-2",
+      sm: "h-9 rounded-xl px-3",
+      lg: "h-13 rounded-xl px-8",
+      icon: "size-8 rounded-xl p-0",
     },
   },
   defaultVariants: {

@@ -15,7 +15,7 @@ function CampaignBanner() {
       <Button
         variant="ghost"
         size="icon"
-        className="size-10 shrink-0 rounded-xl"
+        className="size-10 shrink-0"
         asChild
       >
         <Link to="/my-campaigns">
@@ -46,18 +46,14 @@ function CampaignBanner() {
       <div className="flex-1" />
 
       <div className="flex shrink-0 items-center gap-1.5">
-        <Button variant="ghost" size="icon" className="size-10 rounded-xl">
+        <Button variant="ghost" size="icon" className="size-10">
           <Moon size={16} className="text-foreground" />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative size-10 rounded-xl"
-        >
+        <Button variant="ghost" size="icon" className="relative size-10">
           <Bell size={16} className="text-foreground" />
           <span className="absolute right-2 top-2 size-2.5 rounded-full bg-[#3a64f2]" />
         </Button>
-        <Button variant="ghost" size="icon" className="size-10 rounded-xl">
+        <Button variant="ghost" size="icon" className="size-10">
           <Eye size={16} className="text-foreground" />
         </Button>
       </div>
