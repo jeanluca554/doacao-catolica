@@ -8,8 +8,8 @@ function Root({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-6 rounded-lg border border-(--border) bg-(--card) p-8 shadow-[0_1px_4px_rgba(0,0,0,0.06)]",
-        className
+        "flex flex-col gap-6 rounded-3xl border border-border bg-card p-8",
+        className,
       )}
       {...props}
     />
@@ -19,7 +19,10 @@ function Root({ className, ...props }: ComponentProps<"div">) {
 function Header({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
-      className={cn("flex flex-wrap items-center justify-between gap-5", className)}
+      className={cn(
+        "flex flex-wrap items-center justify-between gap-5",
+        className,
+      )}
       {...props}
     />
   );
@@ -32,7 +35,7 @@ function Content({ className, ...props }: ComponentProps<"div">) {
 function Footer({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
-      className={cn("flex items-center border-t border-(--border) pt-5", className)}
+      className={cn("flex items-center border-t border-border pt-5", className)}
       {...props}
     />
   );
@@ -123,7 +126,7 @@ function MetricValue({ className, ...props }: ComponentProps<"p">) {
     <p
       className={cn(
         "text-[22px] font-semibold leading-none text-(--text-heading)",
-        className
+        className,
       )}
       {...props}
     />
@@ -146,4 +149,12 @@ function MetricTrend({
   );
 }
 
-export const Card = { Root, Header, Content, Footer, MetricHeader, MetricValue, MetricTrend };
+export const Card = {
+  Root,
+  Header,
+  Content,
+  Footer,
+  MetricHeader,
+  MetricValue,
+  MetricTrend,
+};

@@ -77,6 +77,7 @@ class PaymentMetricsGateway implements PaymentMetricsGatewayDTO {
         Payment.restore({
           id: item.payment_uuid,
           customerName: item.customer.name,
+          customerDocument: item.customer.cpf_cnpj,
           amount: item.amount,
           status: item.payment_status,
           origin: item.payment_origin,

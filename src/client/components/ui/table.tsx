@@ -16,7 +16,7 @@ function Root({ className, ...props }: ComponentProps<"table">) {
 }
 
 function Header({ className, ...props }: ComponentProps<"thead">) {
-  return <thead className={cn("bg-(--muted)", className)} {...props} />;
+  return <thead className={cn("bg-muted", className)} {...props} />;
 }
 
 function Body({ className, ...props }: ComponentProps<"tbody">) {
@@ -24,8 +24,8 @@ function Body({ className, ...props }: ComponentProps<"tbody">) {
     <tbody
       className={cn(
         "before:content-[''] before:table-row before:h-3",
-        "[&>tr]:h-16 [&>tr:nth-child(odd)]:bg-(--secondary)",
-        "[&>tr:nth-child(n):hover]:bg-(--border)",
+        "[&>tr]:h-16 [&>tr:nth-child(odd)]:bg-secondary",
+        "[&>tr:nth-child(n):hover]:bg-border",
         className,
       )}
       {...props}
@@ -41,7 +41,7 @@ function Head({ className, ...props }: ComponentProps<"th">) {
   return (
     <th
       className={cn(
-        "h-11 px-4 text-left align-middle font-semibold text-sm text-(--foreground) whitespace-nowrap first:rounded-l-(--radius) last:rounded-r-(--radius)",
+        "h-11 px-4 text-left align-middle font-semibold text-sm text-muted-foreground whitespace-nowrap first:rounded-l-(--radius) last:rounded-r-(--radius)",
         className,
       )}
       {...props}
@@ -53,7 +53,7 @@ function Cell({ className, ...props }: ComponentProps<"td">) {
   return (
     <td
       className={cn(
-        "px-4 align-middle text-sm text-(--foreground) whitespace-nowrap first:rounded-l-(--radius) last:rounded-r-(--radius)",
+        "px-4 align-middle text-sm text-foreground whitespace-nowrap first:rounded-l-(--radius) last:rounded-r-(--radius)",
         className,
       )}
       {...props}

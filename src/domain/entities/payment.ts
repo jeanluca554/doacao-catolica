@@ -22,6 +22,7 @@ const PAYMENT_TYPE_MAP: Record<string, string> = {
 type PaymentConstructorProps = {
   id: string;
   customerName: string;
+  customerDocument: string | null;
   amount: number;
   status: string;
   origin: string;
@@ -36,6 +37,7 @@ type PaymentConstructorProps = {
 class Payment {
   readonly id: string;
   readonly customerName: string;
+  readonly customerDocument: string | null;
   readonly amount: number;
   readonly status: string;
   readonly origin: string;
@@ -49,6 +51,7 @@ class Payment {
   private constructor(props: PaymentConstructorProps) {
     this.id = props.id;
     this.customerName = props.customerName;
+    this.customerDocument = props.customerDocument;
     this.amount = props.amount;
     this.status = props.status;
     this.origin = props.origin;
@@ -71,6 +74,7 @@ class Payment {
     return {
       id: this.id,
       customerName: this.customerName,
+      customerDocument: this.customerDocument,
       amount: fmt(this.amount),
       status: STATUS_MAP[this.status] ?? this.status,
       origin: this.origin === "subscription" ? "Recorrente" : "Pontual",

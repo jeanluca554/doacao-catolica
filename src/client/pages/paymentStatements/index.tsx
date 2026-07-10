@@ -1,36 +1,25 @@
-import type { LucideIcon } from "lucide-react";
 import {
   AlertCircle,
   AlertTriangle,
   Banknote,
-  CheckCircle2,
-  CirclePercent,
   Clock,
-  Wifi,
+  DollarSign,
+  Globe,
+  RefreshCw,
+  TrendingUp,
+  UserCheck,
+  UserPlus,
+  Users,
   XCircle,
+  Zap,
 } from "lucide-react";
 import { useLoaderData, useLocation, useMatches } from "react-router";
-import { Card } from "~/client/components/ui/card";
 import type { PaymentStatementsLoader } from "~/client/types/paymentStatementsLoader";
 import { FilterDrawer } from "./components/filterDrawer";
+import { MetricCard } from "./components/metricCard";
+import type { MetricCardProps } from "./components/metricCard";
 import { PaymentsTable } from "./components/paymentsTable";
 import { PERIOD_OPTIONS, PeriodSelect } from "./components/periodSelect";
-
-type MetricColor =
-  | "teal"
-  | "primary"
-  | "success"
-  | "danger"
-  | "info"
-  | "accent"
-  | "warning";
-
-type MetricCardData = {
-  label: string;
-  value: string;
-  icon: LucideIcon;
-  color: MetricColor;
-};
 
 function PaymentStatementsPage() {
   const { metrics, donors } = useLoaderData<PaymentStatementsLoader>();
@@ -42,15 +31,56 @@ function PaymentStatementsPage() {
   const campaignData = matches.find((m) => m.data && typeof m.data === "object" && "campaign" in m.data)?.data as { campaign: { name: string } } | undefined;
   const campaignName = campaignData?.campaign?.name;
 
-  const metricCards: MetricCardData[] = [
-    { label: "Total recebido online", value: metrics.receivedOnline, icon: Wifi, color: "teal" },
-    { label: "Total liberado", value: metrics.released, icon: CheckCircle2, color: "success" },
-    { label: "Aguardando liberação", value: metrics.awaitingRelease, icon: Clock, color: "warning" },
-    { label: "Pendentes", value: metrics.pending, icon: AlertCircle, color: "info" },
-    { label: "Total recebido offline", value: metrics.receivedOffline, icon: Banknote, color: "primary" },
-    { label: "Em atraso", value: metrics.overdue, icon: AlertTriangle, color: "danger" },
-    { label: "Cancelados", value: metrics.canceled, icon: XCircle, color: "danger" },
-    { label: "Taxas aplicadas", value: metrics.appliedFees, icon: CirclePercent, color: "accent" },
+  const metricCards: MetricCardProps[] = [
+    {
+      label: "Total recebido",
+      value: metrics.released,
+      subtitle: "doações confirmadas",
+      icon: DollarSign,
+      iconBg: "bg-emerald-100",
+      iconColor: "text-emerald-700",
+      breakdown: [
+        { icon: Globe, label: "Online", value: metrics.receivedOnline },
+        { icon: Banknote, label: "Offline", value: metrics.receivedOffline },
+      ],
+    },
+    {
+      label: "Ticket médio",
+      value: "—",
+      subtitle: "vs. período anterior",
+      icon: TrendingUp,
+      iconBg: "bg-blue-100",
+      iconColor: "text-blue-800",
+      breakdown: [
+        { icon: Zap, label: "Doações únicas", value: "—" },
+        { icon: RefreshCw, label: "Recorrentes", value: "—" },
+      ],
+    },
+    {
+      label: "Doadores",
+      value: "—",
+      subtitle: "doadores no período",
+      icon: Users,
+      iconBg: "bg-purple-100",
+      iconColor: "text-purple-800",
+      breakdown: [
+        { icon: UserPlus, label: "Novos", value: "—" },
+        { icon: UserCheck, label: "Fidelizados", value: "—" },
+      ],
+    },
+    {
+      label: "Pendências",
+      value: metrics.pending,
+      subtitle: "exigem atenção",
+      icon: AlertTriangle,
+      iconBg: "bg-orange-100",
+      iconColor: "text-orange-700",
+      breakdown: [
+        { icon: Clock, label: "Aguardando pgto", value: metrics.awaitingRelease },
+        { icon: AlertCircle, label: "Em atraso", value: metrics.overdue },
+        { icon: XCircle, label: "Cancelados", value: metrics.canceled },
+      ],
+    },
   ];
 
   return (
@@ -71,18 +101,13 @@ function PaymentStatementsPage() {
           <FilterDrawer donors={donors.data} />
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {metricCards.map((metric) => (
-          <Card.Root key={metric.label} className="gap-3 p-5">
-            <Card.MetricHeader
-              label={metric.label}
-              icon={metric.icon}
-              color={metric.color}
-            />
-            <Card.MetricValue>{metric.value}</Card.MetricValue>
-          </Card.Root>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {metricCards.map((card) => (
+          <MetricCard key={card.label} {...card} />
         ))}
       </div>
+
       <PaymentsTable />
     </div>
   );

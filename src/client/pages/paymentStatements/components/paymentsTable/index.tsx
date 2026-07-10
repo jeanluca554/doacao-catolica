@@ -1,5 +1,15 @@
-import { Eye, FileDown, FileSymlink, Mail, Plus } from "lucide-react";
+import {
+  Eye,
+  FileDown,
+  FileText,
+  Mail,
+  MoreHorizontal,
+  Plus,
+  Receipt,
+  RefreshCw,
+} from "lucide-react";
 import { Link, useLoaderData, useParams } from "react-router";
+import { Avatar, AvatarFallback } from "~/client/components/ui/avatar";
 import { Badge } from "~/client/components/ui/badge";
 import { Button } from "~/client/components/ui/button";
 import {
@@ -9,24 +19,33 @@ import {
   DropdownMenuTrigger,
 } from "~/client/components/ui/dropdown-menu";
 import { Card } from "~/client/components/ui/card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/client/components/ui/popover";
 import { Table } from "~/client/components/ui/table";
 import { TablePagination } from "~/client/components/ui/table-pagination";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/client/components/ui/tooltip";
 import { WhatsAppIcon } from "~/client/components/ui/whatsapp-icon";
 import type { PaymentStatementsLoader } from "~/client/types/paymentStatementsLoader";
 
-type BadgeVariant = "success" | "danger" | "warning" | "info" | "neutral";
+type BadgeVariant =
+  | "success"
+  | "danger"
+  | "warning"
+  | "info"
+  | "neutral"
+  | "violet"
+  | "emerald"
+  | "navy"
+  | "amber";
 
 const STATUS_BADGE: Record<string, BadgeVariant> = {
-  "Disponível para saque": "success",
-  "Pagamento confirmado": "success",
-  Recebido: "success",
-  "Aguardando pagamento": "warning",
-  Estornado: "warning",
+  "Disponível para saque": "emerald",
+  "Pagamento confirmado": "emerald",
+  Recebido: "emerald",
+  "Aguardando pagamento": "amber",
+  Estornado: "neutral",
   Cancelado: "danger",
   Vencido: "danger",
   "Falha no pagamento": "danger",
@@ -35,36 +54,68 @@ const STATUS_BADGE: Record<string, BadgeVariant> = {
 };
 
 const ORIGIN_BADGE: Record<string, BadgeVariant> = {
-  Recorrente: "success",
-  Pontual: "warning",
+  Recorrente: "violet",
+  Pontual: "neutral",
 };
 
 const PAYMENT_TYPE_BADGE: Record<string, BadgeVariant> = {
-  Pix: "info",
-  "Pix automático": "info",
-  Boleto: "info",
-  "Cartão de crédito": "info",
+  Pix: "emerald",
+  "Pix automático": "emerald",
+  Boleto: "amber",
+  "Cartão de crédito": "navy",
 };
 
-function ActionButton({
-  tooltip,
-  children,
-}: {
-  tooltip: string;
-  children: React.ReactNode;
-}) {
+// Always uses first and last word — e.g. "João Paulo Silva" → "JS"
+function getInitials(name: string): string {
+  const words = name.split(" ").filter(Boolean);
+  const parts = words.length > 1 ? [words[0], words[words.length - 1]] : words;
+  return parts.map((w) => w[0].toUpperCase()).join("");
+}
+
+function ActionsPopover() {
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          type="button"
-          className="flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-secondary"
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-9 rounded-xl text-muted-foreground"
         >
-          {children}
-        </button>
-      </TooltipTrigger>
-      <TooltipContent>{tooltip}</TooltipContent>
-    </Tooltip>
+          <MoreHorizontal size={18} />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-48 p-1.5" align="end" sideOffset={4}>
+        <Button
+          variant="ghost"
+          className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
+        >
+          <Eye size={16} />
+          Ver detalhes
+        </Button>
+        <Button
+          variant="ghost"
+          className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
+        >
+          <FileText size={16} />
+          Acessar fatura
+        </Button>
+        <Button
+          variant="ghost"
+          className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
+        >
+          <Receipt size={16} />
+          Emitir recibo
+        </Button>
+        <div className="my-1 h-px bg-muted" />
+        <Button
+          variant="ghost"
+          className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
+        >
+          <WhatsAppIcon size={16} />
+          Enviar Lembrete
+        </Button>
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -108,75 +159,95 @@ function PaymentsTable() {
       <Table.Root>
         <Table.Header>
           <Table.Row>
-            <Table.Head>Nome</Table.Head>
+            <Table.Head>Doador</Table.Head>
             <Table.Head>Tipo</Table.Head>
             <Table.Head>Valor</Table.Head>
             <Table.Head>Status</Table.Head>
             <Table.Head className="text-center">Notificado por</Table.Head>
-            <Table.Head>Forma de pagamento</Table.Head>
+            <Table.Head>Método</Table.Head>
             <Table.Head>Vencimento</Table.Head>
-            <Table.Head>Pago em</Table.Head>
-            <Table.Head className="text-center">Ações</Table.Head>
+            <Table.Head>Pagamento</Table.Head>
+            <Table.Head className="text-right">Ações</Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {data.map((payment) => (
             <Table.Row key={payment.id}>
-              <Table.Cell>{payment.customerName}</Table.Cell>
               <Table.Cell>
-                <Badge variant={ORIGIN_BADGE[payment.origin] ?? "info"}>
-                  {payment.origin}
-                </Badge>
-              </Table.Cell>
-              <Table.Cell>{payment.amount}</Table.Cell>
-              <Table.Cell>
-                <Badge variant={STATUS_BADGE[payment.status] ?? "info"}>
-                  {payment.status}
-                </Badge>
-              </Table.Cell>
-              <Table.Cell>
-                <div className="flex items-center justify-center gap-1.5">
-                  {payment.notifiedByEmail && (
-                    <Mail size={15} className="text-(--text-muted)" />
-                  )}
-                  {payment.notifiedByWhatsApp && (
-                    <WhatsAppIcon
-                      size={15}
-                      className="text-[rgb(var(--spotlight-success))]"
-                    />
-                  )}
+                <div className="flex items-center gap-3.5">
+                  <Avatar size="lg">
+                    <AvatarFallback className="bg-sidebar-accent-foreground/10 text-xs font-bold text-sidebar-accent-foreground">
+                      {getInitials(payment.customerName)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <span className="text-sm text-foreground">
+                      {payment.customerName}
+                    </span>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {payment.customerDocument ?? "—"}
+                    </span>
+                  </div>
                 </div>
               </Table.Cell>
               <Table.Cell>
                 <Badge
-                  variant={PAYMENT_TYPE_BADGE[payment.paymentType] ?? "info"}
+                  className="py-3"
+                  variant={ORIGIN_BADGE[payment.origin] ?? "neutral"}
+                >
+                  {payment.origin === "Recorrente" && (
+                    <RefreshCw size={11} className="shrink-0" />
+                  )}
+                  {payment.origin}
+                </Badge>
+              </Table.Cell>
+              <Table.Cell className="text-secondary-foreground font-semibold">
+                {payment.amount}
+              </Table.Cell>
+              <Table.Cell>
+                <Badge
+                  className="py-3"
+                  variant={STATUS_BADGE[payment.status] ?? "neutral"}
+                >
+                  {payment.status}
+                </Badge>
+              </Table.Cell>
+              <Table.Cell>
+                <div className="flex items-center justify-center gap-2">
+                  <Mail
+                    size={16}
+                    className={
+                      payment.notifiedByEmail
+                        ? "text-muted-foreground"
+                        : "text-muted-foreground/30"
+                    }
+                  />
+                  <WhatsAppIcon
+                    size={16}
+                    className={
+                      payment.notifiedByWhatsApp
+                        ? "text-[rgb(var(--spotlight-success))]"
+                        : "text-muted-foreground/30"
+                    }
+                  />
+                </div>
+              </Table.Cell>
+              <Table.Cell>
+                <Badge
+                  className="py-3"
+                  variant={PAYMENT_TYPE_BADGE[payment.paymentType] ?? "neutral"}
                 >
                   {payment.paymentType}
                 </Badge>
               </Table.Cell>
-              <Table.Cell>{payment.dueDate}</Table.Cell>
-              <Table.Cell>{payment.paidDate ?? "—"}</Table.Cell>
-              <Table.Cell>
-                <div className="flex items-center justify-center gap-0.5">
-                  <ActionButton tooltip="Visualizar detalhes">
-                    <Eye
-                      size={16}
-                      className="text-[rgb(var(--spotlight-info))]"
-                    />
-                  </ActionButton>
-                  <ActionButton tooltip="Link da fatura">
-                    <FileSymlink
-                      size={16}
-                      className="text-[rgb(var(--spotlight-warning))]"
-                    />
-                  </ActionButton>
-                  <ActionButton tooltip="Enviar lembrete">
-                    <WhatsAppIcon
-                      size={16}
-                      className="text-[rgb(var(--spotlight-success))]"
-                    />
-                  </ActionButton>
-                </div>
+              <Table.Cell className="text-sm text-muted-foreground">
+                {payment.dueDate}
+              </Table.Cell>
+              <Table.Cell className="text-sm text-muted-foreground">
+                {payment.paidDate ?? "—"}
+              </Table.Cell>
+              <Table.Cell className="text-right">
+                <ActionsPopover />
               </Table.Cell>
             </Table.Row>
           ))}
