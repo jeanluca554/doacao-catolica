@@ -9,12 +9,12 @@ import {
   Wifi,
   XCircle,
 } from "lucide-react";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useLocation, useMatches } from "react-router";
 import { Card } from "~/client/components/ui/card";
 import type { PaymentStatementsLoader } from "~/client/types/paymentStatementsLoader";
 import { FilterDrawer } from "./components/filterDrawer";
 import { PaymentsTable } from "./components/paymentsTable";
-import { PeriodSelect } from "./components/periodSelect";
+import { PERIOD_OPTIONS, PeriodSelect } from "./components/periodSelect";
 
 type MetricColor =
   | "teal"
@@ -35,6 +35,13 @@ type MetricCardData = {
 function PaymentStatementsPage() {
   const { metrics, donors } = useLoaderData<PaymentStatementsLoader>();
 
+  const location = useLocation();
+  const matches = useMatches();
+  const period = new URLSearchParams(location.search).get("period") ?? "currentMonth";
+  const periodLabel = PERIOD_OPTIONS.find((o) => o.value === period)?.label ?? "Mês atual";
+  const campaignData = matches.find((m) => m.data && typeof m.data === "object" && "campaign" in m.data)?.data as { campaign: { name: string } } | undefined;
+  const campaignName = campaignData?.campaign?.name;
+
   const metricCards: MetricCardData[] = [
     { label: "Total recebido online", value: metrics.receivedOnline, icon: Wifi, color: "teal" },
     { label: "Total liberado", value: metrics.released, icon: CheckCircle2, color: "success" },
@@ -48,10 +55,17 @@ function PaymentStatementsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-(--text-heading)">
-          Extratos de pagamentos
-        </h1>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="flex flex-col gap-0.5">
+          <h1 className="text-2xl font-semibold tracking-tight text-(--text-heading)">
+            Extratos de pagamentos
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Exibindo{" "}
+            <span className="font-medium text-foreground">{periodLabel}</span>
+            {campaignName && <> · {campaignName}</>}
+          </p>
+        </div>
         <div className="flex items-center gap-3">
           <PeriodSelect />
           <FilterDrawer donors={donors.data} />

@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router";
 import { Select } from "~/client/components/ui/select";
 
-const PERIOD_OPTIONS = [
+export const PERIOD_OPTIONS = [
   { label: "Mês atual", value: "currentMonth" },
   { label: "Últimos 30 dias", value: "last30Days" },
   { label: "Últimos 60 dias", value: "last60Days" },
