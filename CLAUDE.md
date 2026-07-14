@@ -75,6 +75,31 @@ export const Card = { Root, Title, Description };
 
 Ver `src/client/components/ui/CLAUDE.md` para todas as regras de implementação.
 
+### Badges resilientes a valores desconhecidos
+
+Todo mapeamento de valor de API para badge **deve** ser resiliente: se a API retornar um valor não previsto, o badge exibe o valor bruto sem tradução e usa cor neutra — nunca quebra a tela.
+
+Padrão obrigatório:
+```tsx
+// mapa tipado como Record<string, ...> para aceitar qualquer chave
+const STATUS_BADGE: Record<string, { className: string; label: string }> = {
+  active: { className: "bg-emerald-100 text-emerald-700", label: "Ativo" },
+  inactive: { className: "bg-red-100 text-red-700", label: "Inativo" },
+};
+
+// fallback explícito para chave ausente
+const badge = STATUS_BADGE[value];
+<span className={badge?.className ?? "bg-muted text-muted-foreground"}>
+  {badge?.label ?? value}
+</span>
+```
+
+No schema Zod, use `z.string()` em vez de `z.enum([...])` para campos exibidos em badge, evitando que a validação rejeite valores novos antes de chegar ao componente. Documente os valores conhecidos em comentário:
+```ts
+// known values: "active" | "inactive"
+status: z.string(),
+```
+
 ## Clean architecture — camadas
 
 ### DAL vs Gateway — quando usar cada um

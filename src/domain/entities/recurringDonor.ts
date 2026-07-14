@@ -14,7 +14,7 @@ type RecurringDonorProps = {
   activeNotification: boolean;
   amount: number;
   payDay: number;
-  paymentMethod: "automatic_pix" | "pix" | "bank_slip" | "credit_card";
+  paymentMethod: string;
   registeredAt: string;
 };
 
@@ -32,7 +32,7 @@ class RecurringDonor {
   readonly activeNotification: boolean;
   readonly amount: number;
   readonly payDay: number;
-  readonly paymentMethod: "automatic_pix" | "pix" | "bank_slip" | "credit_card";
+  readonly paymentMethod: string;
   readonly registeredAt: string;
 
   private constructor(props: RecurringDonorProps) {

@@ -31,11 +31,20 @@ import { cn } from "~/lib/utils";
 
 type Tab = "recorrentes" | "pontuais";
 
-const PAYMENT_METHOD_BADGE: Record<string, { className: string; label: string }> = {
-  automatic_pix: { className: "bg-violet-100 text-purple-800", label: "Pix Automático" },
+const PAYMENT_METHOD_BADGE: Record<
+  string,
+  { className: string; label: string }
+> = {
+  automatic_pix: {
+    className: "bg-violet-100 text-purple-800",
+    label: "Pix Automático",
+  },
   pix: { className: "bg-emerald-100 text-emerald-700", label: "Pix" },
   bank_slip: { className: "bg-orange-100 text-orange-700", label: "Boleto" },
-  credit_card: { className: "bg-blue-100 text-blue-800", label: "Cartão de Crédito" },
+  credit_card: {
+    className: "bg-blue-100 text-blue-800",
+    label: "Cartão de Crédito",
+  },
 };
 
 function formatApiDate(dateStr: string | null): string {
@@ -132,9 +141,9 @@ function DonorsTable() {
   const visibleDonors = activeTab === "recorrentes" ? donors.data : [];
 
   return (
-    <Card.Root className="gap-0 overflow-hidden p-0">
+    <Card.Root className="gap-4 p-6">
       {/* Tab bar */}
-      <div className="mx-6 mt-6 flex w-fit items-center gap-1 rounded-xl border border-border bg-muted/60 p-1.5">
+      <div className="flex w-fit items-center gap-1 rounded-xl border border-border bg-muted/60 p-1.5">
         <TabButton
           active={activeTab === "recorrentes"}
           onClick={() => setActiveTab("recorrentes")}
@@ -152,7 +161,7 @@ function DonorsTable() {
       </div>
 
       {/* Toolbar */}
-      <div className="flex items-center gap-2.5 px-6 pb-4 pt-6">
+      <div className="flex items-center gap-2.5">
         <div className="flex-1">
           <Input
             leftIcon={Search}
@@ -250,9 +259,12 @@ function DonorsTable() {
                 <Table.Cell>
                   <div className="flex items-center justify-center">
                     {donor.activeNotification ? (
-                      <BellRing size={16} className="text-sidebar-accent-foreground" />
+                      <BellRing
+                        size={16}
+                        className="text-sidebar-accent-foreground"
+                      />
                     ) : (
-                      <BellOff size={16} className="text-muted-foreground/40" />
+                      <BellOff size={16} className="text-muted-foreground" />
                     )}
                   </div>
                 </Table.Cell>
@@ -294,7 +306,7 @@ function DonorsTable() {
       </Table.Root>
 
       {activeTab === "recorrentes" && (
-        <Card.Footer className="flex-col items-center gap-3 px-6 pb-6 pt-4 sm:flex-row sm:justify-between">
+        <Card.Footer className="flex-col items-center gap-3 sm:flex-row sm:justify-between">
           <TablePagination
             currentPage={donors.meta.page}
             totalPages={donors.meta.totalPages}

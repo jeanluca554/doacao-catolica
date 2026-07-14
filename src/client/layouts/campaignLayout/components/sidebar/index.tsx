@@ -55,7 +55,7 @@ const sections: NavSection[] = [
     items: [
       { icon: LayoutDashboard, label: "Dashboard", path: "home" },
       { icon: Heart, label: "Doações", path: "donations" },
-      { icon: Users, label: "Doadores" },
+      { icon: Users, label: "Doadores", path: "donors" },
       {
         icon: Wallet,
         label: "Financeiro",

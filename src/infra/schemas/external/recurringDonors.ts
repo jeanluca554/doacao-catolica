@@ -20,7 +20,8 @@ const recurringDonorsResponseSchema = z.object({
         active_notification: z.boolean(),
         amount: z.number(),
         pay_day: z.number(),
-        payment_method: z.enum(["automatic_pix", "pix", "bank_slip", "credit_card"]),
+        // known values: "automatic_pix" | "pix" | "bank_slip" | "credit_card"
+        payment_method: z.string(),
         registered_at: z.string(),
       }),
     ),
