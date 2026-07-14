@@ -14,6 +14,17 @@ type CreateDonorInput = {
   token: string;
 };
 
+type DonorsSummary = {
+  totalDonors: number;
+  recurringDonors: number;
+  oneTimeDonors: number;
+  newDonorsThisMonth: number;
+  newDonorsPreviousMonth: number;
+  newDonorsVariationPercentage: number;
+  totalRecurringAmount: number;
+  averageDonationAmount: number;
+};
+
 type DonorGatewayDTO = {
   createDonor(input: CreateDonorInput): Promise<string>;
   listDonors(
@@ -22,6 +33,7 @@ type DonorGatewayDTO = {
     searchParams: DonorSearchParams,
     token: string,
   ): Promise<SearchResult<Donor>>;
+  getDonorsSummary(campaignId: string): Promise<DonorsSummary>;
 };
 
-export type { DonorGatewayDTO, CreateDonorInput };
+export type { DonorGatewayDTO, CreateDonorInput, DonorsSummary };

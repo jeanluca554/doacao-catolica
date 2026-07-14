@@ -10,6 +10,7 @@ import { AuthService } from "~/infra/services/authService";
 import { disableRecurrence } from "../factories/disableRecurrence/disableRecurrenceFactory";
 import { generatePaymentBooklet } from "../factories/generatePaymentBooklet/generatePaymentBookletFactory";
 import { generateUpcomingPayments } from "../factories/generateUpcomingPayments/generateUpcomingPaymentsFactory";
+import { getDonorsSummary } from "../factories/getDonorsSummary/getDonorsSummaryFactory";
 import { updateRecurrence } from "../factories/updateRecurrence/updateRecurrenceFactory";
 
 export async function loader(args: Route.LoaderArgs) {
@@ -18,7 +19,9 @@ export async function loader(args: Route.LoaderArgs) {
   const user = await AuthService.getAuthStorage(adaptedRoute);
   if (!user) throw redirect("/sign-in");
 
-  return {};
+  const summary = await getDonorsSummary.handle(adaptedRoute);
+
+  return { summary };
 }
 
 export async function action(args: Route.ActionArgs) {

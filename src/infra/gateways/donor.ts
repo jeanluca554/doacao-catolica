@@ -2,12 +2,15 @@
 import type { DonorSearchParams } from "~/app/search/donorSearchParams";
 import { SearchResult } from "~/app/shared/searchResult";
 import { Donor } from "~/domain/entities/donor";
-import type { CreateDonorInput, DonorGatewayDTO } from "~/domain/gateways/donor";
+import type { CreateDonorInput, DonorGatewayDTO, DonorsSummary } from "~/domain/gateways/donor";
+import { environmentVariables } from "~/main/config/environmentVariables";
 import { HttpAdapter } from "../adapters/httpAdapter";
 import { SchemaValidatorAdapter } from "../adapters/schemaValidatorAdapter";
 import { api } from "../http/api";
+import { donationApi } from "../http/donationApi";
 import { createDonorResponseSchema } from "../schemas/external/createDonor";
 import { externalDonorsListSchema } from "../schemas/external/donor";
+import { donorsSummaryResponseSchema } from "../schemas/external/donorsSummary";
 
 class DonorGateway implements DonorGatewayDTO {
   async createDonor(input: CreateDonorInput): Promise<string> {
@@ -78,6 +81,30 @@ class DonorGateway implements DonorGatewayDTO {
         totalItems: data.meta.totalItems,
       },
     });
+  }
+
+  async getDonorsSummary(campaignId: string): Promise<DonorsSummary> {
+    const url = `/donors/summary/${campaignId}`;
+
+    const apiResponse = await donationApi.get(url, {
+      headers: { "api-key": environmentVariables.API_KEY_DONATION },
+    });
+
+    if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
+
+    const schemaValidator = new SchemaValidatorAdapter(donorsSummaryResponseSchema);
+    const data = schemaValidator.validate(apiResponse.response);
+
+    return {
+      totalDonors: data.data.total_donors,
+      recurringDonors: data.data.recurring_donors,
+      oneTimeDonors: data.data.one_time_donors,
+      newDonorsThisMonth: data.data.new_donors_this_month,
+      newDonorsPreviousMonth: data.data.new_donors_previous_month,
+      newDonorsVariationPercentage: data.data.new_donors_variation_percentage,
+      totalRecurringAmount: data.data.total_recurring_amount,
+      averageDonationAmount: data.data.average_donation_amount,
+    };
   }
 }
 
