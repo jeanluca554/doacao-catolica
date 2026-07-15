@@ -15,9 +15,7 @@ function Root({ className, ...props }: ComponentProps<"nav">) {
 }
 
 function Content({ className, ...props }: ComponentProps<"ul">) {
-  return (
-    <ul className={cn("flex items-center gap-1", className)} {...props} />
-  );
+  return <ul className={cn("flex items-center gap-1", className)} {...props} />;
 }
 
 function Item({ ...props }: ComponentProps<"li">) {
@@ -131,8 +129,8 @@ function Ellipsis({ className, ...props }: ComponentProps<"span">) {
     <span
       aria-hidden
       className={cn(
-        "flex size-7 items-center justify-center text-(--muted-foreground)",
-        className
+        "flex size-7 items-center justify-center text-muted-foreground",
+        className,
       )}
       {...props}
     >
@@ -142,4 +140,12 @@ function Ellipsis({ className, ...props }: ComponentProps<"span">) {
   );
 }
 
-export const Pagination = { Root, Content, Item, Link, Previous, Next, Ellipsis };
+export const Pagination = {
+  Root,
+  Content,
+  Item,
+  Link,
+  Previous,
+  Next,
+  Ellipsis,
+};

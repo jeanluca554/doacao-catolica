@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/client/components/ui/button";
 import {
@@ -12,36 +12,37 @@ import {
   FormErrorProvider,
   FormField,
 } from "~/client/components/ui/form-field";
+import { Input } from "~/client/components/ui/input";
 import { Separator } from "~/client/components/ui/separator";
-import { Textarea } from "~/client/components/ui/textarea";
 import { useActionToast } from "~/client/hooks/useActionToast";
 
-type EnableRecurrenceDialogProps = {
+type GenerateBookletDialogProps = {
   subscriptionUuid: string | null;
-  name: string;
   onClose: () => void;
 };
 
-function EnableRecurrenceDialog({
+function GenerateBookletDialog({
   subscriptionUuid,
-  name,
   onClose,
-}: EnableRecurrenceDialogProps) {
+}: GenerateBookletDialogProps) {
   const fetcher = useFetcher();
   useActionToast(fetcher.data);
   const isSubmitting = fetcher.state !== "idle";
+  const lastOpenedUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data?.toast?.type === "success") {
-      onClose();
-    }
-  }, [fetcher.state, fetcher.data, onClose]);
+    const url = fetcher.data?.urlResponse;
+    if (!url || lastOpenedUrlRef.current === url) return;
+    lastOpenedUrlRef.current = url;
+    window.open(url, "_blank");
+    onClose();
+  }, [fetcher.data?.urlResponse, onClose]);
 
   return (
     <Dialog open={!!subscriptionUuid} onOpenChange={(o) => !o && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Ativar recorrência</DialogTitle>
+          <DialogTitle>Gerar carnê</DialogTitle>
         </DialogHeader>
         <FormErrorProvider fieldErrors={fetcher.data?.cause?.fieldErrors}>
           <fetcher.Form method="post" className="flex flex-col gap-4">
@@ -50,19 +51,23 @@ function EnableRecurrenceDialog({
               name="subscriptionUuid"
               value={subscriptionUuid ?? ""}
             />
-            <div className="p-6">
-              <FormField name="observation" label="Adicione uma observação:">
-                <Textarea
-                  name="observation"
-                  rows={3}
-                  placeholder="Opcional..."
-                />
+            <div className="flex flex-col gap-4 px-6">
+              <FormField name="startDate" label="Data de início:" required>
+                <Input name="startDate" type="date" />
+              </FormField>
+              <FormField name="endDate" label="Data de término:" required>
+                <Input name="endDate" type="date" />
               </FormField>
             </div>
             <Separator />
             <DialogFooter showCloseButton>
-              <Button type="submit" name="_action" value="enableRecurrence" disabled={isSubmitting}>
-                {isSubmitting ? "Ativando..." : "Ativar recorrência"}
+              <Button
+                type="submit"
+                name="_action"
+                value="generatePaymentBooklet"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Gerando..." : "Gerar carnê"}
               </Button>
             </DialogFooter>
           </fetcher.Form>
@@ -72,4 +77,4 @@ function EnableRecurrenceDialog({
   );
 }
 
-export { EnableRecurrenceDialog };
+export { GenerateBookletDialog };

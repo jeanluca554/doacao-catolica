@@ -179,6 +179,21 @@ Exceção: componentes que já encapsulam label + erro internamente (ex.: `Switc
 
 Use `useFetcher` para obter `{ Form, state, data }` — o `data` alimenta o `FormErrorProvider`.
 
+### Identificador de action no botão de submit
+
+Nunca use `<input type="hidden" name="_action" value="..." />` para identificar qual action foi disparada. Em vez disso, coloque `name` e `value` diretamente no botão de submit — o par só é incluído no `FormData` quando aquele botão específico é clicado:
+
+```tsx
+// correto — action identificada pelo botão
+<Button type="submit" name="_action" value="enableRecurrence">
+  Ativar recorrência
+</Button>
+
+// errado — input hidden desnecessário
+<input type="hidden" name="_action" value="enableRecurrence" />
+<Button type="submit">Ativar recorrência</Button>
+```
+
 ## Utilitários de data
 
 `src/lib/getMonthDates.ts` — retorna `{ firstDayOfMonth, lastDayOfMonth }` em `YYYY-MM-DD`:

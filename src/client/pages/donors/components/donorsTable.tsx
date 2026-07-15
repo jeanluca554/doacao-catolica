@@ -8,6 +8,7 @@ import {
   MoreHorizontal,
   Pencil,
   Receipt,
+  ReceiptText,
   RefreshCw,
   Search,
   SlidersHorizontal,
@@ -42,6 +43,7 @@ import { getInitials } from "~/lib/getInitials";
 import { cn } from "~/lib/utils";
 import { DisableRecurrenceDialog } from "./disableRecurrenceDialog";
 import { EnableRecurrenceDialog } from "./enableRecurrenceDialog";
+import { GenerateBookletDialog } from "./generateBookletDialog";
 import { GenerateUpcomingPaymentsDialog } from "./generateUpcomingPaymentsDialog";
 import { UpdateRecurrenceDialog } from "./updateRecurrenceDialog";
 
@@ -51,6 +53,7 @@ type DonorRow = DonorsLoader["donors"]["data"][number];
 type DialogState =
   | { type: "updateRecurrence"; donor: DonorRow }
   | { type: "generateUpcoming"; subscriptionUuid: string }
+  | { type: "generateBooklet"; subscriptionUuid: string }
   | { type: "disableRecurrence"; subscriptionUuid: string; name: string }
   | { type: "enableRecurrence"; subscriptionUuid: string; name: string }
   | null;
@@ -128,6 +131,7 @@ type ActionsPopoverProps = {
   donor: DonorRow;
   onEditRecurrence: () => void;
   onGenerateUpcoming: () => void;
+  onGenerateBooklet: () => void;
   onCancelRecurrence: () => void;
   onEnableRecurrence: () => void;
 };
@@ -136,6 +140,7 @@ function ActionsPopover({
   donor,
   onEditRecurrence,
   onGenerateUpcoming,
+  onGenerateBooklet,
   onCancelRecurrence,
   onEnableRecurrence,
 }: ActionsPopoverProps) {
@@ -172,50 +177,62 @@ function ActionsPopover({
             Ver doações
           </Link>
         </Button>
-        <Button
-          variant="ghost"
-          className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
-          onClick={() => openDialog(onEditRecurrence)}
-        >
-          <Pencil size={16} />
-          Editar recorrência
-        </Button>
-        <Button
-          variant="ghost"
-          className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
-          onClick={() => openDialog(onGenerateUpcoming)}
-        >
-          <Receipt size={16} />
-          Gerar próximas cobranças
-        </Button>
-        <Button
-          variant="ghost"
-          className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
-          disabled={!whatsAppHref}
-          asChild={!!whatsAppHref}
-        >
-          {whatsAppHref ? (
-            <a href={whatsAppHref} target="_blank" rel="noopener noreferrer">
-              <WhatsAppIcon size={16} />
-              Falar no WhatsApp
-            </a>
-          ) : (
-            <>
-              <WhatsAppIcon size={16} />
-              Falar no WhatsApp
-            </>
-          )}
-        </Button>
-        <div className="my-1 h-px bg-muted" />
         {donor.status ? (
-          <Button
-            variant="ghost"
-            className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-destructive hover:bg-muted"
-            onClick={() => openDialog(onCancelRecurrence)}
-          >
-            <Ban size={16} />
-            Cancelar recorrência
-          </Button>
+          <>
+            <Button
+              variant="ghost"
+              className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
+              onClick={() => openDialog(onEditRecurrence)}
+            >
+              <Pencil size={16} />
+              Editar recorrência
+            </Button>
+            <Button
+              variant="ghost"
+              className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
+              onClick={() => openDialog(onGenerateUpcoming)}
+            >
+              <Receipt size={16} />
+              Gerar próximas cobranças
+            </Button>
+            {donor.paymentMethod === "bank_slip" && (
+              <Button
+                variant="ghost"
+                className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
+                onClick={() => openDialog(onGenerateBooklet)}
+              >
+                <ReceiptText size={16} />
+                Gerar carnê
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
+              disabled={!whatsAppHref}
+              asChild={!!whatsAppHref}
+            >
+              {whatsAppHref ? (
+                <a href={whatsAppHref} target="_blank" rel="noopener noreferrer">
+                  <WhatsAppIcon size={16} />
+                  Falar no WhatsApp
+                </a>
+              ) : (
+                <>
+                  <WhatsAppIcon size={16} />
+                  Falar no WhatsApp
+                </>
+              )}
+            </Button>
+            <div className="my-1 h-px bg-muted" />
+            <Button
+              variant="ghost"
+              className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-destructive hover:bg-muted"
+              onClick={() => openDialog(onCancelRecurrence)}
+            >
+              <Ban size={16} />
+              Cancelar recorrência
+            </Button>
+          </>
         ) : (
           <Button
             variant="ghost"
@@ -424,6 +441,12 @@ function DonorsTable() {
                           subscriptionUuid: donor.subscriptionUuid,
                         })
                       }
+                      onGenerateBooklet={() =>
+                        setDialog({
+                          type: "generateBooklet",
+                          subscriptionUuid: donor.subscriptionUuid,
+                        })
+                      }
                       onCancelRecurrence={() =>
                         setDialog({
                           type: "disableRecurrence",
@@ -478,6 +501,12 @@ function DonorsTable() {
           dialog?.type === "enableRecurrence" ? dialog.subscriptionUuid : null
         }
         name={dialog?.type === "enableRecurrence" ? dialog.name : ""}
+        onClose={() => setDialog(null)}
+      />
+      <GenerateBookletDialog
+        subscriptionUuid={
+          dialog?.type === "generateBooklet" ? dialog.subscriptionUuid : null
+        }
         onClose={() => setDialog(null)}
       />
     </>
