@@ -108,14 +108,14 @@ function TabButton({
       variant="ghost"
       onClick={onClick}
       className={cn(
-        "h-auto gap-2 rounded-xl px-3.5 py-2 text-sm font-normal",
+        "h-auto flex-1 gap-2 rounded-xl px-3.5 py-2 text-sm font-normal sm:flex-none",
         active
           ? "bg-card text-foreground font-semibold shadow-sm hover:bg-card"
           : "text-muted-foreground hover:text-foreground",
       )}
     >
       <Icon size={16} className="shrink-0" />
-      {label}
+      <span className="hidden sm:inline">{label}</span>
       <span
         className={cn(
           "rounded-full px-2 py-0.5 text-xs",
@@ -383,7 +383,7 @@ function DonorsTable() {
     <>
       <Card.Root className="gap-4 p-6">
         {/* Tab bar */}
-        <div className="flex w-fit items-center gap-1 rounded-xl border border-border bg-muted/60 p-1.5">
+        <div className="flex w-full items-center gap-1 rounded-xl border border-border bg-muted/60 p-1.5 sm:w-fit">
           <TabButton
             active={activeTab === "recorrentes"}
             onClick={() => handleTabChange("recorrentes")}
