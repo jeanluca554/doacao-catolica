@@ -14,7 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   Link,
   useLoaderData,
@@ -248,6 +248,7 @@ function DonorsTable() {
   const { donors, summary } = useLoaderData<DonorsLoader>();
   const [activeTab, setActiveTab] = useState<Tab>("recorrentes");
   const [dialog, setDialog] = useState<DialogState>(null);
+  const closeDialog = useCallback(() => setDialog(null), []);
   const location = useLocation();
   const navigate = useNavigate();
   const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -471,33 +472,33 @@ function DonorsTable() {
 
       <UpdateRecurrenceDialog
         donor={dialog?.type === "updateRecurrence" ? dialog.donor : null}
-        onClose={() => setDialog(null)}
+        onClose={closeDialog}
       />
       <GenerateUpcomingPaymentsDialog
         subscriptionUuid={
           dialog?.type === "generateUpcoming" ? dialog.subscriptionUuid : null
         }
-        onClose={() => setDialog(null)}
+        onClose={closeDialog}
       />
       <DisableRecurrenceDialog
         subscriptionUuid={
           dialog?.type === "disableRecurrence" ? dialog.subscriptionUuid : null
         }
         name={dialog?.type === "disableRecurrence" ? dialog.name : ""}
-        onClose={() => setDialog(null)}
+        onClose={closeDialog}
       />
       <EnableRecurrenceDialog
         subscriptionUuid={
           dialog?.type === "enableRecurrence" ? dialog.subscriptionUuid : null
         }
         name={dialog?.type === "enableRecurrence" ? dialog.name : ""}
-        onClose={() => setDialog(null)}
+        onClose={closeDialog}
       />
       <GenerateBookletDialog
         subscriptionUuid={
           dialog?.type === "generateBooklet" ? dialog.subscriptionUuid : null
         }
-        onClose={() => setDialog(null)}
+        onClose={closeDialog}
       />
     </>
   );
