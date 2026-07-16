@@ -22,8 +22,6 @@ class CreateRecurrenceController {
     const schemaValidator = new SchemaValidatorAdapter(createRecurrenceSchema);
     const validatedBody = schemaValidator.validate(body);
 
-    console.log("validatedBody", validatedBody);
-
     const undeterminedAmount = validatedBody.valueType === "undetermined";
     const amount = undeterminedAmount ? 0 : (validatedBody.amount ?? 0);
 
