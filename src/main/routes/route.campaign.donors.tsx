@@ -30,7 +30,12 @@ export async function loader(args: Route.LoaderArgs) {
     tab === "pontuais" ? listOneTimeDonors.handle(adaptedRoute) : null,
   ]);
 
-  return { summary, donors, oneTimeDonors };
+  return {
+    summary,
+    donors,
+    oneTimeDonors,
+    currentUrl: args.request.url,
+  };
 }
 
 export async function action(args: Route.ActionArgs) {

@@ -47,10 +47,13 @@ import { EnableRecurrenceDialog } from "./enableRecurrenceDialog";
 import { GenerateBookletDialog } from "./generateBookletDialog";
 import { GenerateUpcomingPaymentsDialog } from "./generateUpcomingPaymentsDialog";
 import { UpdateRecurrenceDialog } from "./updateRecurrenceDialog";
+import { useRoot } from "~/client/hooks/useRoot";
 
 type Tab = "recorrentes" | "pontuais";
 type DonorRow = DonorsLoader["donors"]["data"][number];
-type OneTimeDonorRow = NonNullable<DonorsLoader["oneTimeDonors"]>["data"][number];
+type OneTimeDonorRow = NonNullable<
+  DonorsLoader["oneTimeDonors"]
+>["data"][number];
 
 type DialogState =
   | { type: "updateRecurrence"; donor: DonorRow }
@@ -215,7 +218,11 @@ function ActionsPopover({
                 className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
                 asChild
               >
-                <a href={whatsAppHref} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={whatsAppHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <WhatsAppIcon size={16} />
                   Falar no WhatsApp
                 </a>
@@ -246,9 +253,17 @@ function ActionsPopover({
   );
 }
 
-function OneTimeDonorRow({ donor }: { donor: OneTimeDonorRow }) {
+function OneTimeDonorRow({
+  donor,
+  currentUrl,
+}: {
+  donor: OneTimeDonorRow;
+  currentUrl: string;
+}) {
+  const { user, environmentVariables } = useRoot();
   const [open, setOpen] = useState(false);
   const whatsAppHref = buildWhatsAppHref(donor.phone);
+  const editDonorHref = `${environmentVariables.SANCTON_CRM_PANEL_URL}/api/auth/token?token=${user?.token}&redirect=/contact/${donor.customerUuid}?redirectBack=${encodeURIComponent(currentUrl)}`;
 
   return (
     <Table.Row>
@@ -318,9 +333,12 @@ function OneTimeDonorRow({ donor }: { donor: OneTimeDonorRow }) {
             <Button
               variant="ghost"
               className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
+              asChild
             >
-              <Pencil size={16} />
-              Editar doador
+              <a href={editDonorHref}>
+                <Pencil size={16} />
+                Editar doador
+              </a>
             </Button>
             <Button
               variant="ghost"
@@ -342,7 +360,11 @@ function OneTimeDonorRow({ donor }: { donor: OneTimeDonorRow }) {
                 className="h-auto w-full justify-start gap-5 rounded-lg px-2.5 py-2 text-sm font-normal text-muted-foreground hover:bg-muted"
                 asChild
               >
-                <a href={whatsAppHref} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={whatsAppHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <WhatsAppIcon size={16} />
                   Falar no WhatsApp
                 </a>
@@ -356,7 +378,10 @@ function OneTimeDonorRow({ donor }: { donor: OneTimeDonorRow }) {
 }
 
 function DonorsTable() {
-  const { donors, summary, oneTimeDonors } = useLoaderData<DonorsLoader>();
+  const { environmentVariables, user } = useRoot();
+
+  const { donors, summary, oneTimeDonors, currentUrl } =
+    useLoaderData<DonorsLoader>();
   const [dialog, setDialog] = useState<DialogState>(null);
   const closeDialog = useCallback(() => setDialog(null), []);
   const location = useLocation();
@@ -529,7 +554,8 @@ function DonorsTable() {
                       </Table.Cell>
                       <Table.Cell>
                         {(() => {
-                          const badge = PAYMENT_METHOD_BADGE[donor.paymentMethod];
+                          const badge =
+                            PAYMENT_METHOD_BADGE[donor.paymentMethod];
                           return (
                             <span
                               className={cn(
@@ -627,7 +653,11 @@ function DonorsTable() {
                   </Table.Row>
                 ) : (
                   visibleOneTimeDonors.map((donor) => (
-                    <OneTimeDonorRow key={donor.transferUuid} donor={donor} />
+                    <OneTimeDonorRow
+                      key={donor.transferUuid}
+                      donor={donor}
+                      currentUrl={currentUrl}
+                    />
                   ))
                 )}
               </Table.Body>

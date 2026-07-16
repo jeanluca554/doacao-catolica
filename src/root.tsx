@@ -25,6 +25,7 @@ export async function loader(args: LoaderFunctionArgs) {
       DARK_LOGO: environmentVariables.DARK_LOGO,
       LIGHT_LOGO: environmentVariables.LIGHT_LOGO,
       MOBILE_LOGO: environmentVariables.MOBILE_LOGO,
+      SANCTON_CRM_PANEL_URL: environmentVariables.SANCTON_CRM_PANEL_URL,
     },
     user,
   };

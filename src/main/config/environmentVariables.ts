@@ -27,6 +27,9 @@ const environmentVariablesSchema = z.object({
   AWS_REGION: z.string(),
   AWS_S3_BUCKET: z.string(),
 
+  // CRM panel
+  SANCTON_CRM_PANEL_URL: z.string(),
+
   // Logging
   TRAFFIC_SOURCE_ID: z.uuid(),
   TRAFFIC_SOURCE_TOKEN: z.string(),
