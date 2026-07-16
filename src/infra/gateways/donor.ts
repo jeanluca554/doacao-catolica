@@ -2,7 +2,10 @@
 import type { DonorSearchParams } from "~/app/search/donorSearchParams";
 import { SearchResult } from "~/app/shared/searchResult";
 import { Donor } from "~/domain/entities/donor";
-import type { CreateDonorInput, DonorGatewayDTO } from "~/domain/gateways/donor";
+import type {
+  CreateDonorInput,
+  DonorGatewayDTO,
+} from "~/domain/gateways/donor";
 import { HttpAdapter } from "../adapters/httpAdapter";
 import { SchemaValidatorAdapter } from "../adapters/schemaValidatorAdapter";
 import { api } from "../http/api";
@@ -35,7 +38,9 @@ class DonorGateway implements DonorGatewayDTO {
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 
-    const schemaValidator = new SchemaValidatorAdapter(createDonorResponseSchema);
+    const schemaValidator = new SchemaValidatorAdapter(
+      createDonorResponseSchema,
+    );
     const data = schemaValidator.validate(apiResponse.response);
 
     return data.donator.id;
@@ -54,7 +59,9 @@ class DonorGateway implements DonorGatewayDTO {
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 
-    const schemaValidator = new SchemaValidatorAdapter(externalDonorsListSchema);
+    const schemaValidator = new SchemaValidatorAdapter(
+      externalDonorsListSchema,
+    );
     const data = schemaValidator.validate(apiResponse.response);
 
     return new SearchResult({
