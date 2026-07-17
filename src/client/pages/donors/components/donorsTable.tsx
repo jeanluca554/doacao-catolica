@@ -47,22 +47,15 @@ function TabButton({
       variant="ghost"
       onClick={onClick}
       className={cn(
-        "h-auto flex-1 gap-2 rounded-xl px-3.5 py-2 text-sm font-normal sm:flex-none",
+        "h-auto flex-1 gap-2.5 rounded-xl px-3.5 py-1.5 text-base font-semibold sm:flex-none",
         active
-          ? "bg-card text-foreground font-semibold shadow-sm hover:bg-card"
-          : "text-muted-foreground hover:text-foreground",
+          ? "bg-[#e6e6ed] text-foreground hover:bg-[#e6e6ed] hover:text-foreground"
+          : "text-muted-foreground hover:bg-transparent hover:text-muted-foreground",
       )}
     >
-      <Icon size={16} className="shrink-0" />
+      <Icon size={20} className="shrink-0" />
       <span className="hidden sm:inline">{label}</span>
-      <span
-        className={cn(
-          "rounded-full px-2 py-0.5 text-xs",
-          active
-            ? "bg-muted text-foreground"
-            : "bg-muted/70 text-muted-foreground",
-        )}
-      >
+      <span className="rounded-full bg-muted-foreground/15 px-2.5 py-0.5 text-xs">
         {count}
       </span>
     </Button>
@@ -104,7 +97,7 @@ function DonorsTable() {
   return (
     <>
       <Card.Root className="gap-4 p-6">
-        <div className="flex w-full items-center gap-1 rounded-xl border border-border bg-muted/60 p-1.5 sm:w-fit">
+        <div className="flex w-full items-center gap-1 rounded-[13px] border border-border bg-muted/60 p-1.5 sm:w-fit">
           <TabButton
             active={activeTab === "recorrentes"}
             onClick={() => handleTabChange("recorrentes")}
@@ -126,7 +119,7 @@ function DonorsTable() {
             <Input
               leftIcon={Search}
               placeholder="Buscar por nome, CPF, e-mail ou telefone..."
-              className="h-11 rounded-xl border-transparent bg-muted/50"
+              className="h-11 rounded-xl"
               defaultValue={searchValue}
               onChange={(e) => handleSearch(e.target.value)}
             />
