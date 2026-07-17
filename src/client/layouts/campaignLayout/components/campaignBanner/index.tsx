@@ -6,7 +6,7 @@ import type { CampaignLayoutLoader } from "~/client/types/campaignLayoutLoader";
 import { formatCurrency } from "~/lib/formatCurrency";
 
 function CampaignBanner() {
-  const { campaign } = useLoaderData<CampaignLayoutLoader>();
+  const { campaign, overview } = useLoaderData<CampaignLayoutLoader>();
 
   return (
     <header className="sticky top-0 z-30 flex min-h-14 w-full items-center gap-3 border-b border-border bg-card/80 px-7 py-4 backdrop-blur-sm">
@@ -36,9 +36,11 @@ function CampaignBanner() {
           <span className="truncate text-(--text-muted)">
             {"Arrecadado: "}
             <span className="font-semibold text-foreground">
-              {formatCurrency(campaign.currentRevenue)}
+              {formatCurrency(String(overview.totalRaised))}
             </span>
-            {` de ${formatCurrency(campaign.totalGoal)}`}
+            {campaign.totalGoal
+              ? ` de ${formatCurrency(campaign.totalGoal)}`
+              : null}
           </span>
         </div>
       </div>
