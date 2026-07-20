@@ -24,6 +24,10 @@ function DonationBracketsCard() {
   const options = {
     ...BASE_CHART_OPTIONS,
     indexAxis: "y" as const,
+    plugins: {
+      ...BASE_CHART_OPTIONS.plugins,
+      tooltip: { ...BASE_CHART_OPTIONS.plugins.tooltip, axis: "y" as const },
+    },
     scales: {
       x: {
         grid: { color: "rgba(0,0,0,0.05)" },
