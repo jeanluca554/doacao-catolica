@@ -50,7 +50,7 @@ function CampaignHomePage() {
 
       <MonthlyRecurrenceCard />
 
-      <ChannelPerformanceCard />
+      {/* <ChannelPerformanceCard /> */}
     </div>
   );
 }
