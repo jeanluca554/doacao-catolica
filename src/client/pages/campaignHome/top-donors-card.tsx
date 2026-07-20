@@ -27,7 +27,7 @@ function TopDonorsCard({ campaignId }: { campaignId: string }) {
         </Button>
       </Card.Header>
 
-      <Table.Root>
+      <Table.Root className="min-w-max sm:min-w-0">
         <Table.Header>
           <Table.Row>
             <Table.Head>Doador</Table.Head>
@@ -38,12 +38,12 @@ function TopDonorsCard({ campaignId }: { campaignId: string }) {
         <Table.Body>
           {activity.topDonors.map((donor, index) => (
             <Table.Row key={donor.customerUuid}>
-              <Table.Cell className="max-w-0">
-                <div className="flex min-w-0 items-center gap-3">
+              <Table.Cell className="sm:max-w-0">
+                <div className="flex items-center gap-3 sm:min-w-0">
                   <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-border text-xs font-bold text-muted-foreground">
                     {index + 1}
                   </span>
-                  <span className="truncate text-sm text-(--text-heading)">
+                  <span className="text-sm text-(--text-heading) sm:truncate">
                     {donor.customerName}
                   </span>
                 </div>

@@ -11,6 +11,7 @@ const PAYMENT_METHOD_LABEL: Record<string, string> = {
   credit_card: "Cartão de Crédito",
   debit_card: "Débito",
   boleto: "Boleto",
+  bank_slip: "Boleto",
 };
 
 const PAYMENT_METHOD_COLOR: Record<string, string> = {
@@ -19,6 +20,7 @@ const PAYMENT_METHOD_COLOR: Record<string, string> = {
   credit_card: "#8b5cf6",
   debit_card: "#f59e0b",
   boleto: "#f59e0b",
+  bank_slip: "#f59e0b",
 };
 
 const FALLBACK_COLORS = [
@@ -67,12 +69,12 @@ function PaymentMethodsCard() {
         </p>
       </div>
 
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
         <div className="relative size-40 shrink-0">
           <Doughnut data={data} options={options} />
         </div>
 
-        <div className="flex flex-1 flex-col gap-3">
+        <div className="flex w-full flex-col gap-3">
           {methods.map((m) => (
             <div key={m.label} className="flex items-center gap-2">
               <span

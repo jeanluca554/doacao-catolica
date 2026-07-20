@@ -55,7 +55,7 @@ function RecentDonationsCard({ campaignId }: { campaignId: string }) {
         </Button>
       </Card.Header>
 
-      <Table.Root>
+      <Table.Root className="min-w-max">
         <Table.Header>
           <Table.Row>
             <Table.Head>Doador</Table.Head>
@@ -69,15 +69,15 @@ function RecentDonationsCard({ campaignId }: { campaignId: string }) {
             const badge = STATUS_BADGE[d.status];
             return (
               <Table.Row key={d.paymentUuid}>
-                <Table.Cell className="max-w-0">
-                  <div className="flex min-w-0 items-center gap-3">
+                <Table.Cell>
+                  <div className="flex items-center gap-3">
                     <Avatar className="size-8">
                       <AvatarFallback className="bg-primary text-[0.65rem] font-bold text-primary-foreground">
                         {getInitials(d.customerName)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="truncate text-sm font-medium text-(--text-heading)">
+                      <p className="text-sm font-medium text-(--text-heading)">
                         {d.customerName}
                       </p>
                       <p className="text-xs text-muted-foreground">
