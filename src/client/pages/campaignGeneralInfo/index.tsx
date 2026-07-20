@@ -266,31 +266,31 @@ function CampaignGeneralInfoPage() {
 
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <FormField name="startDate" label="Data de início">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="h-[43px] w-full justify-start gap-2.5 rounded-[11px] border border-input bg-muted px-5 text-base font-normal text-muted-foreground hover:bg-muted hover:brightness-100"
-                  >
-                    <Calendar size={19} className="shrink-0" />
-                    {startDateValue || "Selecione a data"}
-                  </Button>
-                  <input
-                    type="hidden"
-                    name="startDate"
-                    value={startDateValue}
-                  />
+                  <InputGroup.Root>
+                    <InputGroup.Addon>
+                      <Calendar size={16} />
+                    </InputGroup.Addon>
+                    <InputGroup.Input
+                      type="date"
+                      name="startDate"
+                      defaultValue={startDateValue}
+                      className="cursor-pointer bg-muted pl-9"
+                    />
+                  </InputGroup.Root>
                 </FormField>
 
                 <FormField name="endDate" label="Data de término">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="h-[43px] w-full justify-start gap-2.5 rounded-[11px] border border-input bg-muted px-5 text-base font-normal text-muted-foreground hover:bg-muted hover:brightness-100"
-                  >
-                    <Calendar size={19} className="shrink-0" />
-                    {endDateValue || "Sem data definida"}
-                  </Button>
-                  <input type="hidden" name="endDate" value={endDateValue} />
+                  <InputGroup.Root>
+                    <InputGroup.Addon>
+                      <Calendar size={16} />
+                    </InputGroup.Addon>
+                    <InputGroup.Input
+                      type="date"
+                      name="endDate"
+                      defaultValue={endDateValue}
+                      className="cursor-pointer bg-muted pl-9"
+                    />
+                  </InputGroup.Root>
                 </FormField>
               </div>
 
