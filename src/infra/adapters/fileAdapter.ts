@@ -1,6 +1,7 @@
 import { generateId } from "@arkyn/shared";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import type { FileUpload } from "@mjackson/form-data-parser";
+import sharp from "sharp";
 import { Readable } from "stream";
 
 type ConstructorProps = {
@@ -9,6 +10,9 @@ type ConstructorProps = {
   awsSecretAccessKey: string;
   awsS3Bucket: string;
   awsDomain: string;
+  width?: number;
+  height?: number;
+  quality?: number;
 };
 
 class FileAdapter {
@@ -17,6 +21,9 @@ class FileAdapter {
   readonly awsSecretAccessKey: string;
   readonly awsS3Bucket: string;
   readonly awsDomain: string;
+  readonly width?: number;
+  readonly height?: number;
+  readonly quality?: number;
 
   constructor(props: ConstructorProps) {
     this.awsRegion = props.awsRegion;
@@ -24,20 +31,50 @@ class FileAdapter {
     this.awsSecretAccessKey = props.awsSecretAccessKey;
     this.awsS3Bucket = props.awsS3Bucket;
     this.awsDomain = props.awsDomain;
+    this.width = props.width;
+    this.height = props.height;
+    this.quality = props.quality;
   }
 
   async uploadFile(file: FileUpload): Promise<string> {
-    const fileSize = file.size;
     const contentType = file.type;
-    const webStream = file.stream();
-    const fileStream = Readable.fromWeb(webStream as any);
+    const nodeStream = Readable.fromWeb(file.stream() as any);
+
+    const chunks: Buffer[] = [];
+    for await (const chunk of nodeStream) {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    }
+    const rawBuffer = Buffer.concat(chunks);
+
+    let uploadBuffer = rawBuffer;
+
+    if (this.width || this.height || this.quality) {
+      let processor = sharp(rawBuffer);
+
+      if (this.width || this.height) {
+        processor = processor.resize(this.width, this.height, { fit: "cover" });
+      }
+
+      if (this.quality) {
+        const mime = contentType.toLowerCase();
+        if (mime === "image/jpeg" || mime === "image/jpg") {
+          processor = processor.jpeg({ quality: this.quality });
+        } else if (mime === "image/webp") {
+          processor = processor.webp({ quality: this.quality });
+        } else if (mime === "image/png") {
+          processor = processor.png({ quality: this.quality });
+        }
+      }
+
+      uploadBuffer = await processor.toBuffer();
+    }
 
     const uploadParams = {
       Bucket: this.awsS3Bucket,
       Key: `uploads/${generateId("text", "v4")}`,
-      Body: fileStream,
+      Body: uploadBuffer,
       ContentType: contentType,
-      ContentLength: fileSize,
+      ContentLength: uploadBuffer.length,
     };
 
     const s3Client = new S3Client({
@@ -48,8 +85,7 @@ class FileAdapter {
       },
     });
 
-    const command = new PutObjectCommand(uploadParams);
-    await s3Client.send(command);
+    await s3Client.send(new PutObjectCommand(uploadParams));
 
     return `${this.awsDomain}/${uploadParams.Key}`;
   }
