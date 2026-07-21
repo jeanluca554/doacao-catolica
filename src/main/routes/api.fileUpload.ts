@@ -1,16 +1,26 @@
 import type { Route } from "+/api.fileUpload";
 import { type FileUpload, parseFormData } from "@mjackson/form-data-parser";
-import { FileAdapter } from "~/infra/adapters/fileAdapter";
 import { HttpAdapter } from "~/infra/adapters/httpAdapter";
+import { RouteAdapter } from "~/infra/adapters/routeAdapter";
+import { FileAdapter } from "~/infra/adapters/fileAdapter";
+import { AuthService } from "~/infra/services/authService";
 import { environmentVariables } from "../config/environmentVariables";
 
-export async function action({ request }: Route.ActionArgs) {
-  const url = new URL(request.url);
-  const width = url.searchParams.get("w") ? Number(url.searchParams.get("w")) : undefined;
-  const height = url.searchParams.get("h") ? Number(url.searchParams.get("h")) : undefined;
-  const quality = url.searchParams.get("reduceQuality")
-    ? Number(url.searchParams.get("reduceQuality"))
-    : undefined;
+function parsePositiveInt(value: string | null): number | undefined {
+  if (!value) return undefined;
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? Math.round(n) : undefined;
+}
+
+export async function action(args: Route.ActionArgs) {
+  const route = await RouteAdapter.adaptRoute(args);
+  const user = await AuthService.getAuthStorage(route);
+  if (!user) throw HttpAdapter.unauthorized("Unauthorized");
+
+  const url = new URL(args.request.url);
+  const width = parsePositiveInt(url.searchParams.get("w"));
+  const height = parsePositiveInt(url.searchParams.get("h"));
+  const quality = parsePositiveInt(url.searchParams.get("reduceQuality"));
 
   const uploadHandler = async (fileUpload: FileUpload): Promise<string> => {
     if (fileUpload.fieldName !== "file") {
@@ -31,6 +41,6 @@ export async function action({ request }: Route.ActionArgs) {
     return await fileAdapter.uploadFile(fileUpload);
   };
 
-  const formData = await parseFormData(request, uploadHandler);
+  const formData = await parseFormData(args.request, uploadHandler);
   return { url: formData.get("file") };
 }

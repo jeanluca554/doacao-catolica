@@ -63,7 +63,7 @@ function ImageUpload({
       if (reduceQuality) params.set("reduceQuality", String(reduceQuality));
 
       const queryString = params.toString();
-      const uploadUrl = `/api/fileUpload${queryString ? `?${queryString}` : ""}`;
+      const uploadUrl = `/api/file-upload${queryString ? `?${queryString}` : ""}`;
 
       const formData = new FormData();
       formData.append("file", file);
