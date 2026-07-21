@@ -1,17 +1,6 @@
 import { useState } from "react";
-import {
-  Calendar,
-  CheckCircle2,
-  CreditCard,
-  FileText,
-  Info,
-  Mail,
-  MessageCircle,
-  Plug,
-  Search,
-  SlidersHorizontal,
-} from "lucide-react";
-import { Link, useFetcher, useLoaderData, useParams } from "react-router";
+import { Calendar, CheckCircle2 } from "lucide-react";
+import { useFetcher, useLoaderData, useParams } from "react-router";
 import { useActionToast } from "~/client/hooks/useActionToast";
 import { useRoot } from "~/client/hooks/useRoot";
 import { generateSlug } from "~/lib/generateSlug";
@@ -29,38 +18,7 @@ import { Select } from "~/client/components/ui/select";
 import { Switch } from "~/client/components/ui/switch";
 import type { CampaignGeneralInfoLoader } from "~/client/types/campaignGeneralInfoLoader";
 import { cn } from "~/lib/utils";
-
-type StepItem = {
-  icon: React.ElementType;
-  label: string;
-  active?: boolean;
-  href?: string;
-};
-
-const STEPS: Omit<StepItem, "href">[] = [
-  { icon: Info, label: "Informações Gerais", active: true },
-  { icon: FileText, label: "Página da Campanha" },
-  { icon: CreditCard, label: "Valores e Pagamento" },
-  { icon: Mail, label: "Email" },
-  { icon: Search, label: "Metadados SEO" },
-  { icon: Plug, label: "Integrações" },
-  { icon: MessageCircle, label: "Conexão WhatsApp" },
-  { icon: SlidersHorizontal, label: "Preferências" },
-];
-
-const STEP_PATHS: Record<string, string> = {
-  "Informações Gerais": "settings/general-info",
-  "Valores e Pagamento": "settings/payment-methods",
-};
-
-function buildSteps(campaignId: string): StepItem[] {
-  return STEPS.map((step) => ({
-    ...step,
-    href: STEP_PATHS[step.label]
-      ? `/campaign/${campaignId}/${STEP_PATHS[step.label]}`
-      : undefined,
-  }));
-}
+import { buildSteps, StepNav, StepTabBar } from "~/client/components/campaignSettings/stepNav";
 
 // "DD/MM/YYYY - hh:mm" → "YYYY-MM-DD"
 function toDateInput(formatted: string | null | undefined): string {
@@ -95,68 +53,6 @@ const DONATION_TYPE_OPTIONS: {
     desc: "Aceita ambos os tipos de doação",
   },
 ];
-
-function StepNav({ steps }: { steps: StepItem[] }) {
-  return (
-    <aside className="hidden lg:flex flex-col gap-2 w-60 shrink-0 sticky top-6 self-start">
-      {steps.map(({ icon: Icon, label, active, href }) => {
-        const className = cn(
-          "flex items-center gap-3.5 rounded-[13px] px-4 py-3 text-base font-semibold transition-colors",
-          active
-            ? "bg-sidebar-primary text-white"
-            : href
-              ? "text-muted-foreground hover:bg-muted"
-              : "text-muted-foreground cursor-default",
-        );
-        if (href && !active) {
-          return (
-            <Link key={label} to={href} className={className}>
-              <Icon size={19} className="shrink-0" />
-              {label}
-            </Link>
-          );
-        }
-        return (
-          <div key={label} className={className}>
-            <Icon size={19} className="shrink-0" />
-            {label}
-          </div>
-        );
-      })}
-    </aside>
-  );
-}
-
-function StepTabBar({ steps }: { steps: StepItem[] }) {
-  return (
-    <nav className="flex lg:hidden overflow-x-auto gap-1 pb-1">
-      {steps.map(({ icon: Icon, label, active, href }) => {
-        const className = cn(
-          "flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold whitespace-nowrap shrink-0 transition-colors",
-          active
-            ? "bg-sidebar-primary text-white"
-            : href
-              ? "text-muted-foreground hover:bg-muted"
-              : "text-muted-foreground/40 cursor-not-allowed",
-        );
-        if (href && !active) {
-          return (
-            <Link key={label} to={href} className={className}>
-              <Icon size={15} className="shrink-0" />
-              {label}
-            </Link>
-          );
-        }
-        return (
-          <div key={label} className={className}>
-            <Icon size={15} className="shrink-0" />
-            {label}
-          </div>
-        );
-      })}
-    </nav>
-  );
-}
 
 function SectionCard({
   title,
