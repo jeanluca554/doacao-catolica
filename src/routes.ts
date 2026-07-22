@@ -38,6 +38,7 @@ export default [
     route("settings/seo", "./main/routes/route.campaign.seoSettings.tsx"),
     route("settings/integrations", "./main/routes/route.campaign.integrations.tsx"),
     route("settings/whatsapp", "./main/routes/route.campaign.whatsapp.tsx"),
+    route("settings/preferences", "./main/routes/route.campaign.preferences.tsx"),
   ]),
 
 ] satisfies RouteConfig;

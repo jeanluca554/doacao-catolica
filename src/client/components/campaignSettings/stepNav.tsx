@@ -36,6 +36,7 @@ const STEP_PATHS: Record<string, string> = {
   "Metadados SEO": "settings/seo",
   "Integrações": "settings/integrations",
   "Conexão WhatsApp": "settings/whatsapp",
+  "Preferências": "settings/preferences",
 };
 
 function buildSteps(campaignId: string): StepItem[] {
