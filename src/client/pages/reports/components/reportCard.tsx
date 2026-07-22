@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { FileText } from "lucide-react";
+import { Link } from "react-router";
 import { Button } from "~/client/components/ui/button";
 import { Card } from "~/client/components/ui/card";
 import { cn } from "~/lib/utils";
@@ -9,6 +10,7 @@ type ReportCardProps = {
   description: string;
   icon: LucideIcon;
   tone: "amber" | "rose" | "green" | "violet";
+  navigateTo?: string;
 };
 
 function ReportCard({
@@ -16,6 +18,7 @@ function ReportCard({
   description,
   icon: Icon,
   tone,
+  navigateTo,
 }: ReportCardProps) {
   const toneClass = {
     amber: "bg-[rgba(var(--spotlight-warning),0.24)] text-[rgb(var(--spotlight-warning))]",
@@ -24,7 +27,7 @@ function ReportCard({
     violet: "bg-(--badge-violet-bg) text-(--badge-violet-text)",
   }[tone];
 
-  return (
+  const content = (
     <Card.Root className="gap-0 overflow-hidden rounded-lg p-0">
       <div
         className={cn(
@@ -43,12 +46,32 @@ function ReportCard({
           </p>
         </div>
 
-        <Button disabled className="mt-auto h-9 gap-2 rounded-lg">
-          <FileText size={14} />
-          Gerar relatório
-        </Button>
+        {navigateTo ? (
+          <Button asChild className="mt-auto h-9 gap-2 rounded-lg">
+            <span>
+              <FileText size={14} />
+              Gerar relatório
+            </span>
+          </Button>
+        ) : (
+          <Button disabled className="mt-auto h-9 gap-2 rounded-lg">
+            <FileText size={14} />
+            Gerar relatório
+          </Button>
+        )}
       </div>
     </Card.Root>
+  );
+
+  if (!navigateTo) return content;
+
+  return (
+    <Link
+      to={navigateTo}
+      className="block rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    >
+      {content}
+    </Link>
   );
 }
 

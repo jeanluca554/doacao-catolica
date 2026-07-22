@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useLoaderData } from "react-router";
+import type { CollaboratorsLoader } from "~/client/types/collaboratorsLoader";
 import { AddCollaboratorModal } from "./components/addCollaboratorModal";
 import { AccessActionModal } from "./components/accessActionModal";
 import { ChangeRoleModal } from "./components/changeRoleModal";
@@ -10,81 +12,53 @@ import type {
   PendingCollaborator,
 } from "./components/types";
 
-const ROLES: CollaboratorRole[] = [
-  {
-    id: "relationship",
-    name: "Gestor de Relacionamento com Doadores",
-    description:
-      "Gerencia doadores e doações, envia mensagens e acompanha métricas da campanha. Não acessa configurações avançadas, integrações ou dados financeiros sensíveis.",
-    tone: "emerald",
-  },
-  {
-    id: "financial",
-    name: "Gestor Financeiro",
-    description:
-      "Acompanha relatórios financeiros, solicita saques, concilia pagamentos e exporta demonstrativos. Não altera configurações da campanha nem gerencia usuários.",
-    tone: "navy",
-  },
-  {
-    id: "supervisor",
-    name: "Supervisor",
-    description:
-      "Acesso completo às campanhas, doadores e doações, exceto configurações gerais, notificações, integrações e usuários.",
-    tone: "violet",
-  },
+const ROLE_TONES: CollaboratorRole["tone"][] = [
+  "emerald",
+  "navy",
+  "violet",
 ];
 
-const ACTIVE_COLLABORATORS: ActiveCollaborator[] = [
-  {
-    id: "1",
-    initials: "MA",
-    name: "Maria Almeida",
-    email: "maria@doacaocatolica.org",
-    role: ROLES[2],
-  },
-  {
-    id: "2",
-    initials: "RT",
-    name: "Rafael Torres",
-    email: "rafael@doacaocatolica.org",
-    role: ROLES[0],
-  },
-  {
-    id: "3",
-    initials: "CR",
-    name: "Camila Rocha",
-    email: "camila@doacaocatolica.org",
-    role: ROLES[1],
-  },
-  {
-    id: "4",
-    initials: "DF",
-    name: "Diego Fernandes",
-    email: "diego@doacaocatolica.org",
-    role: ROLES[0],
-  },
-];
+function getInitials(name: string, email: string) {
+  const base = name.trim() || email.split("@")[0] || email;
+  const parts = base.split(/\s+/).filter(Boolean);
 
-const PENDING_COLLABORATORS: PendingCollaborator[] = [
-  {
-    id: "5",
-    initials: "NC",
-    email: "novo.colaborador@parceiro.org",
-    role: ROLES[0],
-    invitedAt: "há 2 dias",
-  },
-  {
-    id: "6",
-    initials: "FP",
-    email: "financeiro@parceiro.org",
-    role: ROLES[1],
-    invitedAt: "há 5 dias",
-  },
-];
+  if (parts.length === 0) return "--";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+
+  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+}
+
+function formatStatus(status: string) {
+  const normalized = status.trim().toLowerCase();
+  if (normalized === "pending") return "Pendente";
+  if (normalized === "accepted") return "Aceito";
+  if (normalized === "rejected") return "Recusado";
+
+  return status;
+}
+
+function getRoleTone(name: string, index: number): CollaboratorRole["tone"] {
+  const normalizedName = name.trim().toLowerCase();
+
+  if (normalizedName.includes("supervisor")) return "violet";
+  if (normalizedName.includes("finance")) return "navy";
+  if (normalizedName.includes("relacionamento")) return "emerald";
+
+  return ROLE_TONES[index % ROLE_TONES.length];
+}
 
 function CollaboratorsPage() {
+  const { collaborators, inviteCollaborators, projectRoles } =
+    useLoaderData<CollaboratorsLoader>();
+  const roles: CollaboratorRole[] = projectRoles.map((role, index) => ({
+    id: role.id,
+    name: role.name,
+    description: role.description,
+    tone: getRoleTone(role.name, index),
+  }));
+  const rolesById = new Map(roles.map((role) => [role.id, role]));
   const [addOpen, setAddOpen] = useState(false);
-  const [selectedRoleId, setSelectedRoleId] = useState(ROLES[0].id);
+  const [selectedRoleId, setSelectedRoleId] = useState(roles[0]?.id ?? "");
   const [changeRoleCollaborator, setChangeRoleCollaborator] =
     useState<ActiveCollaborator | null>(null);
   const [removeCollaborator, setRemoveCollaborator] =
@@ -98,12 +72,36 @@ function CollaboratorsPage() {
     setChangeRoleCollaborator(collaborator);
   }
 
+  const activeCollaborators: ActiveCollaborator[] = collaborators.data.map(
+    (collaborator) => ({
+      id: collaborator.id,
+      initials: getInitials(collaborator.user.name, collaborator.user.email),
+      name: collaborator.user.name,
+      email: collaborator.user.email,
+      role: rolesById.get(collaborator.roleId) ?? {
+        id: collaborator.roleId,
+        name: "Função não encontrada",
+        description: "Esta função não está disponível na lista de funções.",
+        tone: "navy",
+      },
+    }),
+  );
+
+  const pendingCollaborators: PendingCollaborator[] =
+    inviteCollaborators.data.map((invite) => ({
+      id: invite.id,
+      initials: getInitials(invite.invitedUserName, invite.invitedUserEmail),
+      name: invite.invitedUserName,
+      email: invite.invitedUserEmail,
+      status: formatStatus(invite.inviteStatus),
+    }));
+
   return (
     <div className="flex flex-col gap-6">
       <CollaboratorsHeader onAddCollaborator={() => setAddOpen(true)} />
       <CollaboratorsTable
-        activeCollaborators={ACTIVE_COLLABORATORS}
-        pendingCollaborators={PENDING_COLLABORATORS}
+        activeCollaborators={activeCollaborators}
+        pendingCollaborators={pendingCollaborators}
         onChangeRole={handleChangeRole}
         onRemoveAccess={setRemoveCollaborator}
         onCancelInvite={setCancelInvite}
@@ -111,14 +109,14 @@ function CollaboratorsPage() {
 
       <AddCollaboratorModal
         open={addOpen}
-        roles={ROLES}
+        roles={roles}
         selectedRoleId={selectedRoleId}
         onOpenChange={setAddOpen}
         onSelectedRoleChange={setSelectedRoleId}
       />
       <ChangeRoleModal
         collaborator={changeRoleCollaborator}
-        roles={ROLES}
+        roles={roles}
         selectedRoleId={selectedRoleId}
         onClose={() => setChangeRoleCollaborator(null)}
         onSelectedRoleChange={setSelectedRoleId}
@@ -128,6 +126,8 @@ function CollaboratorsPage() {
         title="Remover acesso"
         description={`Remover o acesso de ${removeCollaborator?.name ?? "este colaborador"} à campanha?`}
         actionLabel="Remover acesso"
+        actionName="deleteInviteCollaborator"
+        resourceId={removeCollaborator?.id}
         onClose={() => setRemoveCollaborator(null)}
       />
       <AccessActionModal

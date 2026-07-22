@@ -3,27 +3,28 @@ import { z } from "zod";
 type ExternalCollaborator = z.infer<typeof externalCollaboratorSchema>;
 
 const externalCollaboratorSchema = z.object({
-  organizationMemberId: z.string(),
-  organizationMemberName: z.string(),
-  organizationMemberAvatar: z.string().nullable(),
-  organizationMemberProfessionalRegistry: z.string().nullable(),
-  organizationMemberActive: z.boolean(),
-  organizationId: z.string(),
-  userId: z.string(),
-  userEmail: z.string(),
-  roleId: z.string(),
-  roleName: z.string(),
-  activityAreaId: z.string().nullable(),
-  activityAreaName: z.string().nullable(),
-  specialtyId: z.string().nullable(),
-  specialtyName: z.string().nullable(),
+  id: z.string(),
+  project_id: z.string(),
+  user_id: z.number(),
+  value: z.string(),
+  role_id: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+  users: z.object({
+    name: z.string(),
+    email: z.string(),
+  }),
 });
 
-const listCollaboratorsSchema = z.object({
-  items: z.array(externalCollaboratorSchema),
-  page: z.number(),
-  pagesize: z.number(),
-  total: z.number(),
+const externalCollaboratorsSchema = z.object({
+  data: z.array(externalCollaboratorSchema),
+  meta: z.object({
+    currentPage: z.number(),
+    itemsPerPage: z.number(),
+    sortBy: z.array(z.string()),
+    totalItems: z.number(),
+    totalPages: z.number(),
+  }),
 });
 
-export { listCollaboratorsSchema, type ExternalCollaborator };
+export { externalCollaboratorsSchema, type ExternalCollaborator };

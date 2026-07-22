@@ -9,6 +9,8 @@ export default [
   
   layout("./main/routes/layout.portalLayout.tsx", [
     route("my-campaigns", "./main/routes/route.myCampaigns.tsx"),
+    route("pending-invites", "./main/routes/route.pendingInvites.tsx"),
+    route("campaigns-groups", "./main/routes/route.campaignsGroups.tsx"),
   ]),
 
   route("campaign/:campaignId", "./main/routes/layout.campaignLayout.tsx", [
@@ -17,6 +19,14 @@ export default [
     route("donations", "./main/routes/route.campaign.donations.tsx"),
     route("transfers", "./main/routes/route.campaign.transfers.tsx"),
     route("reports", "./main/routes/route.campaign.reports.tsx"),
+    route(
+      "birthday-report",
+      "./main/routes/route.campaign.birthdayReport.tsx",
+    ),
+    route(
+      "overdue-payments",
+      "./main/routes/route.campaign.overduePayments.tsx",
+    ),
     route("collaborators", "./main/routes/route.campaign.collaborators.tsx"),
     route("create-recurrence", "./main/routes/route.campaign.createRecurrence.tsx"),
     route("create-one-time-payment", "./main/routes/route.campaign.createOneTimePayment.tsx"),

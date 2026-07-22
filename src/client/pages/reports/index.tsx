@@ -8,6 +8,7 @@ const REPORTS = [
       "Lista de doadores aniversariantes do mês para ações de relacionamento.",
     icon: Cake,
     tone: "amber" as const,
+    navigateTo: "../birthday-report",
   },
   {
     title: "Lapsos no período",
@@ -15,21 +16,22 @@ const REPORTS = [
       "Doadores recorrentes que interromperam contribuições no período selecionado.",
     icon: UserMinus,
     tone: "rose" as const,
+    navigateTo: "../overdue-payments",
   },
-  {
-    title: "Relatório de Doações",
-    description:
-      "Consolidado de todas as doações realizadas com filtros por período, método e status.",
-    icon: HeartHandshake,
-    tone: "green" as const,
-  },
-  {
-    title: "Relatório de Recorrências",
-    description:
-      "Panorama completo dos doadores recorrentes ativos, previsão mensal e churn.",
-    icon: Repeat2,
-    tone: "violet" as const,
-  },
+  // {
+  //   title: "Relatório de Doações",
+  //   description:
+  //     "Consolidado de todas as doações realizadas com filtros por período, método e status.",
+  //   icon: HeartHandshake,
+  //   tone: "green" as const,
+  // },
+  // {
+  //   title: "Relatório de Recorrências",
+  //   description:
+  //     "Panorama completo dos doadores recorrentes ativos, previsão mensal e churn.",
+  //   icon: Repeat2,
+  //   tone: "violet" as const,
+  // },
 ];
 
 function ReportsPage() {
