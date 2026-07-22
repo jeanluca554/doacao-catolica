@@ -4,6 +4,7 @@ import type { Campaign } from "~/domain/entities/campaign";
 import type {
   CampaignGatewayDTO,
   UpdateCampaignGeneralInfoInput,
+  UpdateCampaignPageInput,
 } from "~/domain/gateways/campaign";
 import { HttpAdapter } from "../adapters/httpAdapter";
 import { SchemaValidatorAdapter } from "../adapters/schemaValidatorAdapter";
@@ -42,6 +43,11 @@ class CampaignGateway implements CampaignGatewayDTO {
 
   async getCampaign(id: string, token: string): Promise<Campaign> {
     const apiResponse = await api.get(`/project/find-one/${id}`, { token });
+
+    console.log(
+      "🚀 ~ file: campaign.ts:38 ~ CampaignGateway ~ getCampaign ~ apiResponse:",
+      apiResponse,
+    );
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 
@@ -97,6 +103,62 @@ class CampaignGateway implements CampaignGatewayDTO {
       body,
       token,
     });
+
+    if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
+  }
+
+  async updateCampaignPage(
+    input: UpdateCampaignPageInput,
+    token: string,
+  ): Promise<void> {
+    const body = {
+      name: input.name,
+      slug: input.slug,
+      status: input.status,
+      published: input.published,
+      start_date: input.startDate,
+      end_date: input.endDate,
+      no_end_date: input.noEndDate,
+      phone: input.phone,
+      type_donation: input.typeDonation,
+      total_goal: input.totalGoal,
+      monthly_goal: input.monthlyGoal,
+      institution_name: input.institutionName,
+      cnpj: input.cnpj,
+      address: input.address,
+      subaccount_id: input.subAccountId,
+      email: input.email,
+      type: input.type,
+      title: input.title,
+      description: input.description,
+      image: input.image,
+      image_mobile: input.imageMobile,
+      featured_video: input.videoUrl,
+      featured_image: input.headerImage,
+      why_donate_title: input.whyDonateTitle,
+      why_donate_text: input.whyDonateText,
+      why_donate_image: input.whyDonateImage,
+      about_us_title: input.aboutUsTitle,
+      about_us_text: input.aboutUsText,
+      about_us_image: input.aboutUsImage,
+      support_whatsapp: input.supportWhatsapp,
+      support_email: input.supportEmail,
+    };
+
+    console.log(
+      "🚀 ~ file: campaign.ts:136 ~ CampaignGateway ~ updateCampaignPage ~ body:",
+      body,
+    );
+
+    const apiResponse = await api.put(`/project/update/${input.campaignId}`, {
+      body,
+      token,
+    });
+
+    console.log(
+      "🚀 ~ file: campaign.ts:140 ~ CampaignGateway ~ updateCampaignPage ~ apiResponse:",
+      apiResponse,
+    );
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
   }

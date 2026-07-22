@@ -25,6 +25,41 @@ type UpdateCampaignGeneralInfoInput = {
   image: string | null;
 };
 
+type UpdateCampaignPageInput = {
+  campaignId: string;
+  subAccountId: string;
+  name: string;
+  slug: string;
+  status: boolean;
+  published: boolean;
+  startDate: string | null;
+  endDate: string | null;
+  noEndDate: boolean;
+  phone: string | null;
+  typeDonation: string;
+  totalGoal: number | null;
+  monthlyGoal: number | null;
+  institutionName: string | null;
+  cnpj: string | null;
+  address: string | null;
+  email: string | null;
+  type: number;
+  title: string | null;
+  description: string | null;
+  image: string | null;
+  imageMobile: string | null;
+  videoUrl: string | null;
+  headerImage: string | null;
+  whyDonateTitle: string | null;
+  whyDonateText: string | null;
+  whyDonateImage: string | null;
+  aboutUsTitle: string | null;
+  aboutUsText: string | null;
+  aboutUsImage: string | null;
+  supportWhatsapp: string | null;
+  supportEmail: string | null;
+};
+
 type CampaignGatewayDTO = {
   listCampaigns: (
     searchParams: CampaignSearchParams,
@@ -36,6 +71,10 @@ type CampaignGatewayDTO = {
     input: UpdateCampaignGeneralInfoInput,
     token: string,
   ) => Promise<void>;
+  updateCampaignPage: (
+    input: UpdateCampaignPageInput,
+    token: string,
+  ) => Promise<void>;
 };
 
-export type { CampaignGatewayDTO, UpdateCampaignGeneralInfoInput };
+export type { CampaignGatewayDTO, UpdateCampaignGeneralInfoInput, UpdateCampaignPageInput };

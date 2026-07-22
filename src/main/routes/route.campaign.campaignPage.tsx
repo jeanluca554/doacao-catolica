@@ -3,9 +3,11 @@ import { redirect } from "react-router";
 import { CampaignPagePage } from "~/client/pages/campaignPage";
 import { ErrorBoundaryPage } from "~/client/pages/errorBoundary";
 import { ErrorHandlerAdapter } from "~/infra/adapters/errorHandlerAdapter";
+import { HttpAdapter } from "~/infra/adapters/httpAdapter";
 import { RouteAdapter } from "~/infra/adapters/routeAdapter";
 import { AuthService } from "~/infra/services/authService";
 import { getCampaign } from "../factories/campaign/getCampaignFactory";
+import { updateCampaignPage } from "../factories/campaign/updateCampaignPageFactory";
 
 export async function loader(args: Route.LoaderArgs) {
   const route = await RouteAdapter.adaptRoute(args);
@@ -22,8 +24,10 @@ export async function action(args: Route.ActionArgs) {
 
   try {
     switch (_action) {
+      case "updateCampaignPage":
+        return await updateCampaignPage.handle(route);
       default:
-        return null;
+        return HttpAdapter.badRequest("Ação não definida");
     }
   } catch (error) {
     return ErrorHandlerAdapter.handle(error);

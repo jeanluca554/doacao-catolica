@@ -105,14 +105,35 @@ const updateCampaignGeneralInfoSchema = z.object({
 
 type UpdateCampaignGeneralInfoType = z.infer<typeof updateCampaignGeneralInfoSchema>;
 
+const updateCampaignPageSchema = z.object({
+  title: z.string().optional().transform((v) => v || null),
+  description: z.string().optional().transform((v) => v || null),
+  image: z.string().optional().transform((v) => v || null),
+  imageMobile: z.string().optional().transform((v) => v || null),
+  videoUrl: z.string().optional().transform((v) => v || null),
+  headerImage: z.string().optional().transform((v) => v || null),
+  whyDonateTitle: z.string().optional().transform((v) => v || null),
+  whyDonateText: z.string().optional().transform((v) => v || null),
+  whyDonateImage: z.string().optional().transform((v) => v || null),
+  aboutUsTitle: z.string().optional().transform((v) => v || null),
+  aboutUsText: z.string().optional().transform((v) => v || null),
+  aboutUsImage: z.string().optional().transform((v) => v || null),
+  supportWhatsapp: z.string().optional().transform((v) => v || null),
+  supportEmail: z.string().optional().transform((v) => v || null),
+});
+
+type UpdateCampaignPageType = z.infer<typeof updateCampaignPageSchema>;
+
 export {
   createCampaignSchema,
   deleteCampaignSchema,
   listCampaignsSchema,
   updateCampaignSchema,
   updateCampaignGeneralInfoSchema,
+  updateCampaignPageSchema,
   type CreateCampaignType,
   type DeleteCampaignType,
   type UpdateCampaignType,
   type UpdateCampaignGeneralInfoType,
+  type UpdateCampaignPageType,
 };
