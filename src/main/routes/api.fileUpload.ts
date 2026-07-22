@@ -6,6 +6,8 @@ import { FileAdapter } from "~/infra/adapters/fileAdapter";
 import { AuthService } from "~/infra/services/authService";
 import { environmentVariables } from "../config/environmentVariables";
 
+const ACCEPTED_FORMATS_LABEL = "JPG, PNG, WebP ou GIF";
+
 function parsePositiveInt(value: string | null): number | undefined {
   if (!value) return undefined;
   const n = Number(value);
@@ -41,6 +43,16 @@ export async function action(args: Route.ActionArgs) {
     return await fileAdapter.uploadFile(fileUpload);
   };
 
-  const formData = await parseFormData(args.request, uploadHandler);
-  return { url: formData.get("file") };
+  try {
+    const formData = await parseFormData(args.request, uploadHandler);
+    return { url: formData.get("file") };
+  } catch (error) {
+    const msg = error instanceof Error ? error.message.toLowerCase() : "";
+    if (msg.includes("unsupported") || msg.includes("format")) {
+      return {
+        error: `Formato de imagem não suportado. Envie uma imagem ${ACCEPTED_FORMATS_LABEL}.`,
+      };
+    }
+    return { error: "Erro ao processar imagem. Tente novamente." };
+  }
 }

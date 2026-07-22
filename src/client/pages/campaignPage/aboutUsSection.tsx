@@ -1,7 +1,7 @@
-import { FileUploadField } from "~/client/components/campaignSettings/fileUploadField";
 import { RichTextarea } from "~/client/components/campaignSettings/richTextarea";
 import { SectionCard } from "~/client/components/campaignSettings/sectionCard";
 import { FormField } from "~/client/components/ui/form-field";
+import { ImageUpload } from "~/client/components/ui/image-upload";
 import { Input } from "~/client/components/ui/input";
 
 function AboutUsSection() {
@@ -19,12 +19,10 @@ function AboutUsSection() {
           placeholder="Conte a história da instituição..."
         />
       </FormField>
-      <FileUploadField
-        name="aboutUsImage"
-        label="Imagem do bloco"
-        optional
-        hint="Dimensão recomendada: 800x600px."
-      />
+      <FormField name="aboutUsImage" label="Imagem do bloco">
+        <ImageUpload name="aboutUsImage" width={800} height={600} />
+        <p className="text-xs text-muted-foreground">Dimensão recomendada: 800x600px.</p>
+      </FormField>
     </SectionCard>
   );
 }

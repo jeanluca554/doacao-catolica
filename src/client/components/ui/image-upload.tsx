@@ -4,6 +4,9 @@ import type { ChangeEvent, DragEvent } from "react";
 import { cn } from "~/client/lib/utils";
 import { FormErrorContext, FormFieldContext } from "./form-field";
 
+const ACCEPTED_MIME_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+const ACCEPTED_FORMATS_LABEL = "JPG, PNG, WebP ou GIF";
+
 type ImageUploadProps = {
   name: string;
   defaultValue?: string | null;
@@ -39,8 +42,47 @@ function ImageUpload({
     };
   }, []);
 
+  function getImageDimensions(file: File): Promise<{ width: number; height: number }> {
+    return new Promise((resolve, reject) => {
+      const img = document.createElement("img");
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error());
+      };
+      img.src = url;
+    });
+  }
+
   async function handleFile(file: File) {
     if (disabled || isLoading) return;
+
+    if (!ACCEPTED_MIME_TYPES.includes(file.type)) {
+      setUploadError(`Formato não suportado. Envie uma imagem ${ACCEPTED_FORMATS_LABEL}.`);
+      return;
+    }
+
+    if (width || height) {
+      try {
+        const dims = await getImageDimensions(file);
+        const tooNarrow = width && dims.width < width;
+        const tooShort = height && dims.height < height;
+        if (tooNarrow || tooShort) {
+          const parts = [
+            tooNarrow && `largura mínima de ${width}px`,
+            tooShort && `altura mínima de ${height}px`,
+          ].filter(Boolean);
+          setUploadError(`Imagem muito pequena. Necessário: ${parts.join(" e ")}.`);
+          return;
+        }
+      } catch {
+        // proceed if dimensions can't be read
+      }
+    }
 
     if (objectUrlRef.current) {
       URL.revokeObjectURL(objectUrlRef.current);
@@ -71,18 +113,22 @@ function ImageUpload({
       const response = await fetch(uploadUrl, { method: "POST", body: formData });
       const data = await response.json();
 
-      if (!response.ok || !data?.url) throw new Error("Upload falhou");
+      if (!response.ok || !data?.url) {
+        throw new Error(data?.error ?? "Erro ao enviar imagem. Tente novamente.");
+      }
 
       setValue(data.url);
       setPreviewUrl(data.url);
       URL.revokeObjectURL(localUrl);
       objectUrlRef.current = null;
-    } catch {
+    } catch (err) {
       URL.revokeObjectURL(localUrl);
       objectUrlRef.current = null;
       setValue(previousValue);
       setPreviewUrl(previousPreviewUrl);
-      setUploadError("Erro ao enviar imagem. Tente novamente.");
+      setUploadError(
+        err instanceof Error ? err.message : "Erro ao enviar imagem. Tente novamente.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -102,7 +148,7 @@ function ImageUpload({
     e.preventDefault();
     if (disabled || isLoading) return;
     const file = e.dataTransfer.files[0];
-    if (file?.type.startsWith("image/")) handleFile(file);
+    if (file) handleFile(file);
   }
 
   const hasError = hasFieldError || !!uploadError;
@@ -125,7 +171,7 @@ function ImageUpload({
       >
         <input
           type="file"
-          accept="image/*"
+          accept={ACCEPTED_MIME_TYPES.join(",")}
           className="sr-only"
           disabled={disabled || isLoading}
           onChange={handleInputChange}

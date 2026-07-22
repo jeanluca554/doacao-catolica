@@ -1,7 +1,7 @@
-import { FileUploadField } from "~/client/components/campaignSettings/fileUploadField";
 import { RichTextarea } from "~/client/components/campaignSettings/richTextarea";
 import { SectionCard } from "~/client/components/campaignSettings/sectionCard";
 import { FormField } from "~/client/components/ui/form-field";
+import { ImageUpload } from "~/client/components/ui/image-upload";
 import { Input } from "~/client/components/ui/input";
 
 function WhyDonateSection() {
@@ -22,12 +22,10 @@ function WhyDonateSection() {
           placeholder="Explique o impacto da doação..."
         />
       </FormField>
-      <FileUploadField
-        name="whyDonateImage"
-        label="Imagem do bloco"
-        optional
-        hint="Dimensão recomendada: 800x600px."
-      />
+      <FormField name="whyDonateImage" label="Imagem do bloco">
+        <ImageUpload name="whyDonateImage" width={800} height={600} />
+        <p className="text-xs text-muted-foreground">Dimensão recomendada: 800x600px.</p>
+      </FormField>
     </SectionCard>
   );
 }

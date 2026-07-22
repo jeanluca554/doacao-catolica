@@ -61,7 +61,6 @@ function CampaignPagePage() {
           <FormErrorProvider fieldErrors={data?.cause?.fieldErrors}>
             <Form
               method="post"
-              encType="multipart/form-data"
               action={`/campaign/${campaignId}/settings/campaign-page`}
               className="flex flex-col gap-6"
             >
