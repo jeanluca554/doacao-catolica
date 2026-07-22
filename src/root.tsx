@@ -25,6 +25,7 @@ export async function loader(args: LoaderFunctionArgs) {
       DARK_LOGO: environmentVariables.DARK_LOGO,
       LIGHT_LOGO: environmentVariables.LIGHT_LOGO,
       MOBILE_LOGO: environmentVariables.MOBILE_LOGO,
+      PLATAFORM_NAME: environmentVariables.PLATAFORM_NAME,
     },
     user,
   };

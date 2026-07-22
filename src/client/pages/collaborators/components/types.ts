@@ -17,8 +17,8 @@ type PendingCollaborator = {
   id: string;
   initials: string;
   email: string;
-  role: CollaboratorRole;
-  invitedAt: string;
+  name: string;
+  status: string;
 };
 
 export type { ActiveCollaborator, CollaboratorRole, PendingCollaborator };

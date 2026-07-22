@@ -1,22 +1,19 @@
-import { CollaboratorSearchParams } from "~/app/search/collaboratorSearchParams";
 import type { CollaboratorGatewayDTO } from "~/domain/gateways/collaborator";
 
 type InputProps = {
-  page?: number | null;
-  filter: { name?: string };
+  campaignId: string;
 };
 
 class ListCollaboratorsUseCase {
-  constructor(private collaboratorGateway: CollaboratorGatewayDTO) {}
+  constructor(private gateway: CollaboratorGatewayDTO) {}
 
-  async execute(input: InputProps) {
-    const { page, filter } = input;
-    const searchParams = new CollaboratorSearchParams({ page, filter });
+  async execute(input: InputProps, token: string) {
+    const result = await this.gateway.listCollaborators(
+      input.campaignId,
+      token,
+    );
 
-    const collaborators =
-      await this.collaboratorGateway.listCollaborators(searchParams);
-
-    return collaborators.toJson();
+    return result.toJson();
   }
 }
 

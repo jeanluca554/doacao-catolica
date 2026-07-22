@@ -1,72 +1,57 @@
-type CollaboratorConstructorProps = {
-  id: string;
+type CollaboratorUser = {
   name: string;
   email: string;
-  roleId: string;
-  roleName: string;
-  specialtyId: string | null;
-  specialtyName: string | null;
-  active: boolean;
-  avatar: string | null;
-  professionalRegistry: string | null;
 };
 
-type CollaboratorRestoreProps = CollaboratorConstructorProps;
+type CollaboratorProps = {
+  id: string;
+  projectId: string;
+  userId: number;
+  value: string;
+  roleId: string;
+  createdAt: string;
+  updatedAt: string;
+  user: CollaboratorUser;
+};
 
 class Collaborator {
-  id: string;
-  name: string;
-  email: string;
-  roleId: string;
-  roleName: string;
-  specialtyId: string | null;
-  specialtyName: string | null;
-  active: boolean;
-  avatar: string | null;
-  professionalRegistry: string | null;
+  readonly id: string;
+  readonly projectId: string;
+  readonly userId: number;
+  readonly value: string;
+  readonly roleId: string;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly user: CollaboratorUser;
 
-  private constructor(props: CollaboratorConstructorProps) {
+  private constructor(props: CollaboratorProps) {
     this.id = props.id;
-    this.name = props.name;
-    this.email = props.email;
+    this.projectId = props.projectId;
+    this.userId = props.userId;
+    this.value = props.value;
     this.roleId = props.roleId;
-    this.specialtyId = props.specialtyId;
-    this.active = props.active;
-    this.roleName = props.roleName;
-    this.specialtyName = props.specialtyName;
-    this.avatar = props.avatar;
-    this.professionalRegistry = props.professionalRegistry;
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+    this.user = props.user;
   }
 
-  static restore(props: CollaboratorRestoreProps): Collaborator {
-    return new Collaborator({
-      id: props.id,
-      name: props.name,
-      email: props.email,
-      roleId: props.roleId,
-      specialtyId: props.specialtyId,
-      active: props.active,
-      roleName: props.roleName,
-      specialtyName: props.specialtyName,
-      avatar: props.avatar,
-      professionalRegistry: props.professionalRegistry,
-    });
+  static restore(props: CollaboratorProps): Collaborator {
+    return new Collaborator(props);
   }
 
   toJson() {
     return {
       id: this.id,
-      name: this.name,
-      email: this.email,
+      projectId: this.projectId,
+      userId: this.userId,
+      value: this.value,
       roleId: this.roleId,
-      specialtyId: this.specialtyId,
-      active: this.active,
-      roleName: this.roleName,
-      specialtyName: this.specialtyName,
-      avatar: this.avatar,
-      professionalRegistry: this.professionalRegistry,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      user: this.user,
     };
   }
 }
 
 export { Collaborator };
+export type { CollaboratorProps, CollaboratorUser };

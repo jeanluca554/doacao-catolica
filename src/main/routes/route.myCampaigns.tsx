@@ -3,6 +3,7 @@ import { MyCampaignsPage } from "~/client/pages/myCampaigns";
 import { RouteAdapter } from "~/infra/adapters/routeAdapter";
 import { AuthService } from "~/infra/services/authService";
 import { listCampaigns } from "../factories/campaing/listCampaingsFactory";
+import { listPendingInvites } from "../factories/pendingInvite/listPendingInvitesFactory";
 import { ErrorBoundaryPage } from "~/client/pages/errorBoundary";
 import { redirect } from "react-router";
 
@@ -13,6 +14,19 @@ export async function loader(args: Route.LoaderArgs) {
   if (!user) throw redirect("/sign-in");
 
   const campaigns = await listCampaigns.handle(adaptedRoute);
+
+  const url = new URL(args.request.url);
+  const skipPendingInvites =
+    url.searchParams.get("skipPendingInvites") === "true";
+
+  if (!skipPendingInvites) {
+    const pendingInvites =
+      await listPendingInvites.handle(adaptedRoute);
+
+    if (pendingInvites.items.length > 0) {
+      throw redirect("/pending-invites");
+    }
+  }
 
   return { campaigns };
 }

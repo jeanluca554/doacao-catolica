@@ -17,7 +17,7 @@ type TransfersTableProps = {
 
 function TransfersTable({ transfers }: TransfersTableProps) {
   return (
-    <Card.Root className="gap-5 rounded-2xl p-6">
+    <Card.Root className="gap-4 p-6">
       <Card.Header>
         <h2 className="text-base font-semibold text-foreground">
           Solicitações de saque
@@ -25,7 +25,7 @@ function TransfersTable({ transfers }: TransfersTableProps) {
       </Card.Header>
 
       <Table.Root>
-        <Table.Header className="bg-transparent">
+        <Table.Header>
           <Table.Row>
             <Table.Head>Data solicitação</Table.Head>
             <Table.Head>Data transferência</Table.Head>
@@ -35,25 +35,34 @@ function TransfersTable({ transfers }: TransfersTableProps) {
             <Table.Head className="text-right">Recibo</Table.Head>
           </Table.Row>
         </Table.Header>
-        <Table.Body className="before:hidden [&>tr]:h-14 [&>tr:nth-child(odd)]:bg-transparent [&>tr]:border-b [&>tr]:border-border">
+        <Table.Body>
           {transfers.data.map((transfer) => (
             <Table.Row key={transfer.id}>
-              <Table.Cell>{formatDate(transfer.createdAt)}</Table.Cell>
-              <Table.Cell className="text-muted-foreground">
+              <Table.Cell className="text-sm text-muted-foreground">
+                {formatDate(transfer.createdAt)}
+              </Table.Cell>
+              <Table.Cell className="text-sm text-muted-foreground">
                 {formatDate(transfer.paidDate)}
               </Table.Cell>
-              <Table.Cell className="font-semibold">
+              <Table.Cell className="font-semibold text-secondary-foreground">
                 {formatCurrency(transfer.amount)}
               </Table.Cell>
               <Table.Cell className="text-muted-foreground">—</Table.Cell>
               <Table.Cell>
-                <Badge variant={getStatusVariant(transfer.status)}>
+                <Badge
+                  className="py-3"
+                  variant={getStatusVariant(transfer.status)}
+                >
                   {formatStatus(transfer.status)}
                 </Badge>
               </Table.Cell>
               <Table.Cell className="text-right">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <ReceiptText size={14} />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2 text-muted-foreground"
+                >
+                  <ReceiptText size={16} />
                   Ver recibo
                 </Button>
               </Table.Cell>
@@ -73,7 +82,7 @@ function TransfersTable({ transfers }: TransfersTableProps) {
         </Table.Body>
       </Table.Root>
 
-      <Card.Footer className="justify-between text-sm text-muted-foreground">
+      <Card.Footer className="flex-col items-center gap-3 text-sm text-muted-foreground sm:flex-row sm:justify-between">
         <span>Total de {transfers.meta.totalItems} registros</span>
         <div className="flex items-center gap-3">
           <span>

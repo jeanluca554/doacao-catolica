@@ -1,57 +1,52 @@
-import type { CollaboratorSearchParams } from "~/app/search/collaboratorSearchParams";
 import { SearchResult } from "~/app/shared/searchResult";
-import type { Collaborator } from "~/domain/entities/collaborator";
+import { Collaborator } from "~/domain/entities/collaborator";
 import type { CollaboratorGatewayDTO } from "~/domain/gateways/collaborator";
 import { HttpAdapter } from "../adapters/httpAdapter";
 import { SchemaValidatorAdapter } from "../adapters/schemaValidatorAdapter";
 import { api } from "../http/api";
-import { CollaboratorMapper } from "../mappers/collaborator";
-import { listCollaboratorsSchema } from "../schemas/external/collaborator";
-import type {
-  DeleteCollaboratorType,
-  UpdateCollaboratorType,
-} from "../schemas/internal/collaborator";
+import { externalCollaboratorsSchema } from "../schemas/external/collaborator";
 
 class CollaboratorGateway implements CollaboratorGatewayDTO {
   async listCollaborators(
-    searchParams: CollaboratorSearchParams,
+    campaignId: string,
+    token: string,
   ): Promise<SearchResult<Collaborator>> {
-    let url = "/organization-members/list-view";
-    url += searchParams.toExternal();
-
-    const apiResponse = await api.get(url);
+    const apiResponse = await api.get(
+      `/project_user/find-all-by-project-id/${campaignId}`,
+      { token },
+    );
 
     if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
 
-    const schemaValidator = new SchemaValidatorAdapter(listCollaboratorsSchema);
+    const schemaValidator = new SchemaValidatorAdapter(
+      externalCollaboratorsSchema,
+    );
     const externalCollaborators = schemaValidator.validate(
       apiResponse.response,
     );
 
     return new SearchResult({
-      data: externalCollaborators.items.map(CollaboratorMapper.toEntity),
+      data: externalCollaborators.data.map((collaborator) =>
+        Collaborator.restore({
+          id: collaborator.id,
+          projectId: collaborator.project_id,
+          userId: collaborator.user_id,
+          value: collaborator.value,
+          roleId: collaborator.role_id,
+          createdAt: collaborator.created_at,
+          updatedAt: collaborator.updated_at,
+          user: {
+            name: collaborator.users.name,
+            email: collaborator.users.email,
+          },
+        }),
+      ),
       meta: {
-        page: externalCollaborators.page,
-        pageLimit: externalCollaborators.pagesize,
-        totalItems: externalCollaborators.total,
+        page: externalCollaborators.meta.currentPage,
+        pageLimit: externalCollaborators.meta.itemsPerPage,
+        totalItems: externalCollaborators.meta.totalItems,
       },
     });
-  }
-
-  async updateCollaborator(body: UpdateCollaboratorType): Promise<void> {
-    const apiResponse = await api.post("/organization-members/update", {
-      body,
-    });
-
-    if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
-  }
-
-  async deleteCollaborator(body: DeleteCollaboratorType): Promise<void> {
-    const apiResponse = await api.delete(
-      `/organization-members/delete/${body.id}`,
-    );
-
-    if (!apiResponse.success) throw HttpAdapter.badGateway(apiResponse.message);
   }
 }
 

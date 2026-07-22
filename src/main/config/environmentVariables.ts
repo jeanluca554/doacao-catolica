@@ -14,6 +14,10 @@ const environmentVariablesSchema = z.object({
   API_URL_DONATION: z.string(),
   API_KEY_DONATION: z.string(),
 
+  // Metabase embed configuration
+  METABASE_API: z.string(),
+  METABASE_SECRET_KEY: z.string(),
+
   // Google OAuth configuration
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
@@ -33,6 +37,7 @@ const environmentVariablesSchema = z.object({
   DARK_LOGO: z.url(),
   LIGHT_LOGO: z.url(),
   MOBILE_LOGO: z.url(),
+  PLATAFORM_NAME: z.string().default("Doação Católica"),
 });
 
 function formatErrorMessage(error: z.ZodError) {
